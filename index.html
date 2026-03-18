@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bertoia Instruments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,500;0,900;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="split-view-container">
+        
+        <div class="left-panel">
+            <header>
+                <h1>Experience<br><span class="italic-title">Sonambient</span><br><span class="medium-title">Sculptures</span></h1>
+                <p class="subtitle">select one or more instrument to begin</p>
+            </header>
+            
+            <main id="instrument-categories">
+                <section class="category-section">
+                    <h2>Tonals</h2>
+                    <div class="grid-container" id="grid-tonals"></div>
+                </section>
+                
+                <section class="category-section">
+                    <h2>Gongs</h2>
+                    <div class="grid-container" id="grid-gongs"></div>
+                </section>
+                
+                <section class="category-section">
+                    <h2>Singing Bars</h2>
+                    <div class="grid-container" id="grid-singing-bars"></div>
+                </section>
+            </main>
+        </div>
+
+        <div class="right-panel">
+            <canvas id="spectrogram-canvas"></canvas>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

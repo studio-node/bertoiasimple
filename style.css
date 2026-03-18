@@ -1,0 +1,184 @@
+:root {
+    --bg-color: #0c0e10;
+    --text-color: #ffffff;
+    --accent-glow: rgba(144, 202, 249, 0.6);
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.split-view-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.left-panel {
+    flex: 0 0 477px; /* Scaled down 25% from 636px */
+    background: #0c0e10;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 45px 24px 24px 24px; /* Scaled down 25% */
+}
+
+/* Custom scrollbar for left panel if it overflows */
+.left-panel::-webkit-scrollbar {
+    width: 6px;
+}
+.left-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+.left-panel::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.right-panel {
+    flex: 1;
+    background: #0c0e10;
+    position: relative;
+    display: flex;
+}
+
+#spectrogram-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+header {
+    text-align: left;
+    margin-bottom: 52px; /* Scaled down */
+}
+
+header h1 {
+    font-size: 27px; /* Scaled down */
+    font-weight: 600; /* Experience is now SemiBold */
+    line-height: 1.1;
+    letter-spacing: -1.35px; /* Scaled down */
+    margin-bottom: 18px; /* Scaled down */
+}
+
+header h1 .italic-title {
+    font-size: 36px; /* Scaled down */
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: -1.8px; /* Scaled down */
+}
+
+header h1 .medium-title {
+    font-weight: 500;
+}
+
+header .subtitle {
+    font-size: 18px; /* Scaled down */
+    font-weight: 700; /* Now Bold instead of Black */
+    letter-spacing: -0.9px; /* Scaled down */
+}
+
+.category-section {
+    margin-bottom: 30px; /* Reduced further */
+}
+
+.category-section h2 {
+    font-size: 18px; /* Scaled down */
+    font-weight: 900;
+    letter-spacing: -0.9px; /* Scaled down */
+    margin-bottom: 10px; /* Scaled down */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 118px); /* Scaled down from 157px */
+    grid-gap: 27px; /* Scaled down from 36px */
+    width: 100%;
+}
+
+.instrument-tile {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 0px;
+    overflow: hidden;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateZ(0); /* Hardware accel for smooth transition */
+}
+
+.instrument-tile.placeholder {
+    cursor: default;
+    border: none;
+    background: #ffffff !important;
+}
+
+.instrument-tile.placeholder:hover {
+    transform: none;
+    box-shadow: none;
+    border: none;
+}
+
+.instrument-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 1; /* Fully colored by default */
+    transition: transform 0.6s ease, opacity 0.4s ease, filter 0.4s ease;
+}
+
+.instrument-tile:not(.placeholder):hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.instrument-tile:hover img {
+    transform: scale(1.03);
+}
+
+/* Active Playing State */
+.instrument-tile.active {
+    border-color: rgba(144, 202, 249, 0.8);
+    box-shadow: 0 0 25px var(--accent-glow), inset 0 0 15px var(--accent-glow);
+    transform: translateY(-2px) scale(0.98);
+}
+
+.instrument-tile.active img {
+    opacity: 0.3; /* Dimly overlaying the image */
+    filter: grayscale(50%);
+}
+
+/* Wavy Canvas Overlay */
+.progress-canvas {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Let clicks pass through to the tile */
+    z-index: 2; /* Sit above the dimmed image */
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 1rem;
+    }
+}
