@@ -1,47 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bertoia Instruments</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,500;0,900;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,500;0,900;1,500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="split-view-container">
-        
-        <div class="left-panel">
-            <header>
-                <h1>Experience<br><span class="italic-title">Sonambient</span><br><span class="medium-title">Sculptures</span></h1>
-                <p class="subtitle">select one or more instrument to begin</p>
-            </header>
-            
+    <nav class="site-nav">
+        <div class="nav-links left">
+            <a href="#">Background</a>
+            <a href="#">Sculptures</a>
+            <a href="#">Foundation</a>
+        </div>
+        <div class="nav-logo">
+            <img src="bertoia_logo.png" alt="Harry Bertoia Foundation">
+        </div>
+        <div class="nav-links right">
+            <a href="#">Catalogue Raisonne</a>
+            <a href="#">Shop</a>
+        </div>
+    </nav>
+
+    <header class="site-header">
+        <h1>HARRY BERTOIA'S SONAMBIENT</h1>
+        <p>Select an instrument to hear its sound</p>
+    </header>
+
+    <div class="main-content-container">
+        <div class="top-row">
+            <div class="canvas-container">
+                <canvas id="spectrogram-canvas"></canvas>
+                <button id="fullscreen-btn" title="Fullscreen Visualizer">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="currently-playing-container">
+                <h3 class="currently-playing-title">Currently playing:</h3>
+                <div id="currently-playing-info">
+                    <!-- Dynamic info goes here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-row">
+            <h2 class="inventory-title">Instruments</h2>
             <main id="instrument-categories">
                 <section class="category-section">
-                    <h2>Tonals</h2>
-                    <div class="grid-container" id="grid-tonals"></div>
+                    <h2>Tonals: Rods</h2>
+                    <div class="grid-container" id="grid-tonals-rods"></div>
                 </section>
-                
+
+                <section class="category-section">
+                    <h2>Tonals: Tops</h2>
+                    <div class="grid-container" id="grid-tonals-tops"></div>
+                </section>
+
                 <section class="category-section">
                     <h2>Gongs</h2>
                     <div class="grid-container" id="grid-gongs"></div>
                 </section>
-                
+
                 <section class="category-section">
                     <h2>Singing Bars</h2>
                     <div class="grid-container" id="grid-singing-bars"></div>
                 </section>
             </main>
         </div>
-
-        <div class="right-panel">
-            <canvas id="spectrogram-canvas"></canvas>
-        </div>
-
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>

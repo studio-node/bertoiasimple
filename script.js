@@ -2,14 +2,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const gridContainer = document.getElementById("instrument-grid");
     const canvas = document.getElementById("spectrogram-canvas");
     const ctx = canvas.getContext("2d");
+    const currentlyPlayingInfo = document.getElementById("currently-playing-info");
 
     // Resize canvas to match its display size
     const resizeCanvas = () => {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+        if (canvas) {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+        }
     };
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
+
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+    const canvasContainer = document.querySelector(".canvas-container");
+    if (fullscreenBtn && canvasContainer) {
+        fullscreenBtn.addEventListener("click", () => {
+            if (!document.fullscreenElement) {
+                canvasContainer.requestFullscreen().catch(err => {
+                    console.error("Error enabling fullscreen:", err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+    }
 
     // 1. Setup Web Audio API
     let audioCtx;
@@ -19,21 +36,162 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Instruments Configuration
     const instruments = [
-        // Tonals
-        { id: 'tonal-1', category: 'tonals', image: "top1/tonal1.png", sound: "top1/1m_heavy strumming_percussive_drones_IH_t46.wav", buffer: null, activeInstances: [] },
-        { id: 'tonal-2', category: 'tonals', image: null, sound: "top1/1m_heavy strumming_percussive_drones_IH_t46.wav", buffer: null, activeInstances: [] },
-        { id: 'tonal-3', category: 'tonals', image: null, sound: "top1/1m_heavy strumming_percussive_drones_IH_t46.wav", buffer: null, activeInstances: [] },
+        // GONGS
+        { id: 'gong-verdigris', category: 'gongs', image: "Instruments/GONGS/verdigris/verdigris_transp.png", sound: "Instruments/GONGS/verdigris/1 Verdigris.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Verdigris", material: "Unknown", year: "Unknown" },
+        { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.png", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Cat Gong", material: "Unknown", year: "Unknown" },
+        { id: 'gong-blue', category: 'gongs', image: "Instruments/GONGS/blue/blue.png", sound: "Instruments/GONGS/blue/blue.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Blue", material: "Unknown", year: "Unknown" },
+        { id: 'gong-2plytall', category: 'gongs', image: "Instruments/GONGS/2 Ply Tall/2plytall.png", sound: "Instruments/GONGS/2 Ply Tall/1 (1).ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Tall", material: "Unknown", year: "Unknown" },
+        { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.png", sound: "Instruments/GONGS/2 ply square/2plysquare.wav", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Square", material: "Unknown", year: "Unknown" },
+        { id: 'gong-round', category: 'gongs', image: "Instruments/GONGS/round gong by door/HUB_1151_GONG_TRANSP.png", sound: "Instruments/GONGS/round gong by door/1.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Round Gong", material: "Unknown", year: "Unknown" },
+        { id: 'gong-gravegong', category: 'gongs', image: "Instruments/GONGS/gravegong/gravegong.png", sound: "Instruments/GONGS/gravegong/3s.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Grave Gong", material: "Unknown", year: "Unknown" },
 
-        // Gongs
-        { id: 'gong-1', category: 'gongs', image: "gong1/Screenshot 2026-03-17 at 4.57.04 PM.png", sound: "gong1/1m15s_gong_rods strummed_percussive gong.wav", buffer: null, activeInstances: [] },
-        { id: 'gong-2', category: 'gongs', image: null, sound: "gong1/1m15s_gong_rods strummed_percussive gong.wav", buffer: null, activeInstances: [] },
-        { id: 'gong-3', category: 'gongs', image: null, sound: "gong1/1m15s_gong_rods strummed_percussive gong.wav", buffer: null, activeInstances: [] },
+        // SINGING BARS
+        { id: 'bars-1', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/Screenshot 2026-03-17 at 5.14.01 PM.png", sound: "Instruments/SINGING BARS/singingbars1/1m16s_swinging bars_gong_drone_rods_LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 1", material: "Unknown", year: "Unknown" },
 
-        // Singing Bars
-        { id: 'bar-1', category: 'singing-bars', image: "swinging bars1/Screenshot 2026-03-17 at 5.14.01 PM.png", sound: "swinging bars1/1m16s_swinging bars_gong_drone_rods_LP.wav", buffer: null, activeInstances: [] },
-        { id: 'bar-2', category: 'singing-bars', image: null, sound: "swinging bars1/1m16s_swinging bars_gong_drone_rods_LP.wav", buffer: null, activeInstances: [] },
-        { id: 'bar-3', category: 'singing-bars', image: null, sound: "swinging bars1/1m16s_swinging bars_gong_drone_rods_LP.wav", buffer: null, activeInstances: [] }
+        // TONALS - TOPS
+        { id: 'tops-1', category: 'tonals-tops', image: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531-transparent.png", sound: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0531", material: "Unknown", year: "Unknown" },
+        { id: 'tops-2', category: 'tonals-tops', image: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729_transparent.png", sound: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729.ogg", buffer: null, activeInstances: [], isLooping: false, name: "6 HUB 0729", material: "Unknown", year: "Unknown" },
+        { id: 'tops-3', category: 'tonals-tops', image: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949_transparent.png", sound: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949.ogg", buffer: null, activeInstances: [], isLooping: false, name: "7 HUB 0949", material: "Unknown", year: "Unknown" },
+        { id: 'tops-4', category: 'tonals-tops', image: "Instruments/TONALS/tops/9 HUB_696/HUB_0696_transparent.png", sound: "Instruments/TONALS/tops/9 HUB_696/c 20s_thick tops_one hit_knocking decay_9.ogg", buffer: null, activeInstances: [], isLooping: false, name: "9 HUB 0696", material: "Unknown", year: "Unknown" },
+        { id: 'tops-5', category: 'tonals-tops', image: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0960_transparent.png", sound: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0360.ogg", buffer: null, activeInstances: [], isLooping: false, name: "3 HUB 0960", material: "Unknown", year: "Unknown" },
+        { id: 'tops-6', category: 'tonals-tops', image: "Instruments/TONALS/tops/8 HUB_584/a HUB_0584_transparent.png", sound: "Instruments/TONALS/tops/8 HUB_584/a 1m_thin tops  shimmering_UH_IB_1m.ogg", buffer: null, activeInstances: [], isLooping: false, name: "8 HUB 0584", material: "Unknown", year: "Unknown" },
+        { id: 'tops-7', category: 'tonals-tops', image: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749_transparent.png", sound: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749.ogg", buffer: null, activeInstances: [], isLooping: false, name: "4 HUB 0749", material: "Unknown", year: "Unknown" },
+
+        // TONALS - RODS
+        { id: 'rods-1', category: 'tonals-rods', image: "Instruments/TONALS/rods/4 HUB_514/4 HUB_0514_transparent.png", sound: "Instruments/TONALS/rods/4 HUB_514/4_HUB_0514.ogg", buffer: null, activeInstances: [], isLooping: false, name: "4 HUB 0514", material: "Unknown", year: "Unknown" },
+        { id: 'rods-2', category: 'tonals-rods', image: "Instruments/TONALS/rods/3 HUB_724/3 HUB_0724_transparent.png", sound: "Instruments/TONALS/rods/3 HUB_724/3_HUB_0724.ogg", buffer: null, activeInstances: [], isLooping: false, name: "3 HUB 0724", material: "Unknown", year: "Unknown" },
+        { id: 'rods-3', category: 'tonals-rods', image: "Instruments/TONALS/rods/1 HUB_399/1 HUB_0399_transparent.png", sound: "Instruments/TONALS/rods/1 HUB_399/1_HUB_0399.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0399", material: "Unknown", year: "Unknown" },
+        { id: 'rods-4', category: 'tonals-rods', image: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521_transparent.png", sound: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521.ogg", buffer: null, activeInstances: [], isLooping: false, name: "10 HUB 0521", material: "Unknown", year: "Unknown" },
+        { id: 'rods-5', category: 'tonals-rods', image: "Instruments/TONALS/rods/5 HUB_663/5 HUB_0663_transparent.png", sound: "Instruments/TONALS/rods/5 HUB_663/5_HUB_0663.ogg", buffer: null, activeInstances: [], isLooping: false, name: "5 HUB 0663", material: "Unknown", year: "Unknown" },
+        { id: 'rods-6', category: 'tonals-rods', image: "Instruments/TONALS/rods/2A HUB_854/2 HUB_0854_transparent.png", sound: "Instruments/TONALS/rods/2A HUB_854/2A_HUB_0854.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2A HUB 0854", material: "Unknown", year: "Unknown" },
+        { id: 'rods-7', category: 'tonals-rods', image: "Instruments/TONALS/rods/2 HUB_0663/2 HUB_0663_transparent.png", sound: "Instruments/TONALS/rods/2 HUB_0663/2 vidsource2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 HUB 0663", material: "Unknown", year: "Unknown" }
     ];
+    if (currentlyPlayingInfo) {
+        currentlyPlayingInfo.addEventListener("click", (e) => {
+            const stopBtn = e.target.closest('.stop-btn');
+            if (stopBtn) {
+                e.preventDefault();
+                const id = stopBtn.dataset.id;
+                const item = instruments.find(i => i.id === id);
+                if (item && item.activeInstances.length > 0) {
+                    const tile = document.querySelector(`.instrument-tile[data-id="${id}"]`);
+                    if (tile) handleTileClick(item, tile);
+                }
+            }
+
+            const loopBtn = e.target.closest('.loop-btn');
+            if (loopBtn) {
+                e.preventDefault();
+                const id = loopBtn.dataset.id;
+                const item = instruments.find(i => i.id === id);
+                if (item) {
+                    item.isLooping = !item.isLooping;
+                    item.activeInstances.forEach(inst => {
+                        if (inst.source) inst.source.loop = item.isLooping;
+                    });
+                    renderCurrentlyPlaying();
+                }
+            }
+
+            const pauseBtn = e.target.closest('.pause-btn');
+            if (pauseBtn) {
+                e.preventDefault();
+                const id = pauseBtn.dataset.id;
+                const item = instruments.find(i => i.id === id);
+                if (item && item.activeInstances.length > 0) {
+                    const instance = item.activeInstances[0];
+                    const tile = document.querySelector(`.instrument-tile[data-id="${id}"]`);
+                    
+                    if (instance.isPaused) {
+                        // Resume playback
+                        playAtOffset(item, tile, instance.pauseOffset);
+                    } else {
+                        // Pause playback
+                        instance.isPaused = true;
+                        let elapsed = audioCtx.currentTime - instance.startTime;
+                        if (item.isLooping) elapsed = elapsed % instance.duration;
+                        instance.pauseOffset = Math.min(elapsed, instance.duration);
+                        stopInstance(instance, 0.1); 
+                        renderCurrentlyPlaying();
+                    }
+                }
+            }
+        });
+
+        currentlyPlayingInfo.addEventListener("input", (e) => {
+            if (e.target.classList.contains('scrubber')) {
+                const id = e.target.dataset.id;
+                const item = instruments.find(i => i.id === id);
+                if (item) item.isScrubbing = true;
+            }
+        });
+
+        currentlyPlayingInfo.addEventListener("change", (e) => {
+            if (e.target.classList.contains('scrubber')) {
+                const id = e.target.dataset.id;
+                const item = instruments.find(i => i.id === id);
+                if (item && item.activeInstances.length > 0) {
+                    const tile = document.querySelector(`.instrument-tile[data-id="${id}"]`);
+                    const instance = item.activeInstances[0];
+                    const newOffset = (parseFloat(e.target.value) / 100) * instance.duration;
+                    
+                    item.isScrubbing = false;
+                    
+                    if (!instance.isPaused) {
+                        stopInstance(instance, 0.1);
+                        playAtOffset(item, tile, newOffset);
+                    } else {
+                        instance.pauseOffset = newOffset;
+                    }
+                }
+            }
+        });
+    }
+    function renderCurrentlyPlaying() {
+        if (!currentlyPlayingInfo) return;
+        
+        const playingInstruments = instruments.filter(inst => inst.activeInstances.length > 0);
+        
+        if (playingInstruments.length === 0) {
+            currentlyPlayingInfo.innerHTML = '';
+            return;
+        }
+
+        currentlyPlayingInfo.innerHTML = playingInstruments.map(item => {
+            const materialStr = item.material === 'Unknown' ? '' : `<p>material: ${item.material}</p>`;
+            const yearStr = item.year === 'Unknown' ? '' : `<p>made ${item.year}</p>`;
+            const isPaused = item.activeInstances[0]?.isPaused;
+
+            return `
+                <div class="playing-item">
+                    <img src="${item.image || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'}" alt="${item.name}">
+                    <div class="info-details">
+                        <p><strong>${item.name}</strong></p>
+                        <input type="range" id="prog-${item.id}" class="mini-progress scrubber" min="0" max="100" value="0" step="0.1" data-id="${item.id}">
+                        <div class="playing-controls">
+                            <button class="control-btn loop-btn ${item.isLooping ? 'active' : ''}" data-id="${item.id}" title="Toggle Loop">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                            </button>
+                            <button class="control-btn pause-btn" data-id="${item.id}" title="${isPaused ? 'Play' : 'Pause'}">
+                                ${isPaused ? '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' : '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'}
+                            </button>
+                            <button class="control-btn stop-btn" data-id="${item.id}" title="Stop Audio">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>
+                            </button>
+                        </div>
+                        ${materialStr}
+                        ${yearStr}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
 
     // 2. Custom Spectrogram Setup
     // No explicit initialization needed, we will draw lines based on canvas dimensions dynamically.
@@ -62,7 +220,95 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Handles both starting and stopping sounds
+    const categoryVolumes = {
+        'gongs': 0.8,
+        'singing-bars': 0.9,
+        'tonals-tops': 0.7,
+        'tonals-rods': 0.8
+    };
+
+    function stopInstance(instance, fadeOutDuration = 1.5) {
+        instance.manualStop = true;
+        if (instance.gainNode && !instance.isPaused) {
+            const now = audioCtx.currentTime;
+            instance.gainNode.gain.cancelScheduledValues(now);
+            instance.gainNode.gain.setValueAtTime(instance.gainNode.gain.value, now);
+            instance.gainNode.gain.linearRampToValueAtTime(0, now + fadeOutDuration);
+            setTimeout(() => {
+                try { instance.source.stop(); } catch (e) {}
+                instance.gainNode.disconnect();
+            }, fadeOutDuration * 1000 + 50);
+        } else {
+            try { instance.source.stop(); } catch (e) {}
+        }
+    }
+
+    async function playAtOffset(item, tileElement, offset = 0) {
+        const buffer = await loadAudioBuffer(item);
+        if (!buffer) return;
+
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        
+        const gainNode = audioCtx.createGain();
+        const targetVolume = categoryVolumes[item.category] || 1.0;
+        
+        // Fade in
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(targetVolume, audioCtx.currentTime + 0.15);
+        
+        // Natural end fade out (1s) if not looping
+        if (!item.isLooping && offset < buffer.duration) {
+            const timeRemaining = buffer.duration - offset;
+            if (timeRemaining > 1.0) {
+                gainNode.gain.setValueAtTime(targetVolume, audioCtx.currentTime + timeRemaining - 1.0);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + timeRemaining);
+            }
+        }
+        
+        source.connect(gainNode);
+        gainNode.connect(analyser); // Connect straight to master visualizer
+
+        const instance = {
+            source: source,
+            gainNode: gainNode,
+            startTime: audioCtx.currentTime - offset,
+            duration: buffer.duration,
+            isPaused: false,
+            pauseOffset: 0
+        };
+
+        if (item.isLooping) {
+            source.loop = true;
+        }
+
+        source.onended = () => {
+            if (instance.isPaused || instance.manualStop) return;
+
+            const index = item.activeInstances.indexOf(instance);
+            if (index > -1) {
+                item.activeInstances.splice(index, 1);
+            }
+
+            if (item.activeInstances.length === 0) {
+                if (tileElement) tileElement.classList.remove("active");
+            }
+            renderCurrentlyPlaying();
+        };
+
+        source.start(0, offset);
+
+        if (item.activeInstances.length > 0) {
+            item.activeInstances[0] = instance; // Replace paused instance
+        } else {
+            item.activeInstances.push(instance);
+        }
+        
+        if (tileElement) tileElement.classList.add("active");
+        renderCurrentlyPlaying();
+    }
+
+    // Handles both starting and stopping sounds (toggle)
     function handleTileClick(item, tileElement) {
         if (!audioCtx) initAudio();
         if (audioCtx.state === 'suspended') {
@@ -70,95 +316,41 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (item.activeInstances.length > 0) {
-            const oldestInstance = item.activeInstances.shift();
-            oldestInstance.source.stop();
+            const instance = item.activeInstances[0];
+            stopInstance(instance, 1.5); // 1.5s manual stop fade
+            item.activeInstances = [];
+            tileElement.classList.remove("active");
+            renderCurrentlyPlaying();
             return;
         }
 
-        const play = async () => {
-            const buffer = await loadAudioBuffer(item);
-            if (!buffer) return;
-
-            const source = audioCtx.createBufferSource();
-            source.buffer = buffer;
-            source.connect(analyser); // Connect straight to master visualizer
-
-            const instance = {
-                source: source,
-                startTime: audioCtx.currentTime,
-                duration: buffer.duration
-            };
-
-            item.activeInstances.push(instance);
-            tileElement.classList.add("active");
-
-            source.onended = () => {
-                const index = item.activeInstances.indexOf(instance);
-                if (index > -1) {
-                    item.activeInstances.splice(index, 1);
-                }
-
-                if (item.activeInstances.length === 0) {
-                    tileElement.classList.remove("active");
-                }
-            };
-
-            source.start(0);
-        };
-        play();
+        playAtOffset(item, tileElement, 0);
     }
 
-    // Wavy Liquid Progress Fill (Gentle depleting wave)
+    // Update mini progress bars in the Currently Playing section
     function updateProgressBars() {
         if (audioCtx) {
             const currentTime = audioCtx.currentTime;
 
             instruments.forEach(item => {
-                const c = item.canvas;
-                const ctx = item.canvasCtx;
-                if (!ctx || !c) return;
+                if (item.activeInstances.length === 0) return;
 
-                if (item.activeInstances.length === 0) {
-                    if (item.wasActive) {
-                        ctx.clearRect(0, 0, c.width, c.height);
-                        item.wasActive = false;
+                const instance = item.activeInstances[0];
+                const progEl = document.getElementById(`prog-${item.id}`);
+                
+                if (progEl && !item.isScrubbing) {
+                    let progress = 0;
+                    if (instance.isPaused) {
+                        progress = instance.pauseOffset / instance.duration;
+                    } else {
+                        const elapsed = currentTime - instance.startTime;
+                        const currentLoopPos = elapsed % instance.duration;
+                        progress = Math.min(1, Math.max(0, currentLoopPos / instance.duration));
                     }
-                    return;
+                    progEl.value = progress * 100;
+                    // Update visual background of range slider
+                    progEl.style.background = `linear-gradient(to right, #b87333 ${progEl.value}%, var(--placeholder-bg) ${progEl.value}%)`;
                 }
-
-                item.wasActive = true;
-                ctx.clearRect(0, 0, c.width, c.height);
-
-                // 2. Draw a flat depleting line per active playback (stacked/overlayed)
-                item.activeInstances.forEach((instance, index) => {
-                    const elapsed = currentTime - instance.startTime;
-                    // Ensure we stay within 0-1 bounds
-                    const progress = Math.min(1, Math.max(0, elapsed / instance.duration));
-
-                    const fillRatio = 1 - progress;
-                    const targetY = c.height - (c.height * fillRatio);
-
-                    ctx.beginPath();
-                    ctx.moveTo(0, targetY);
-                    ctx.lineTo(c.width, targetY);
-
-                    // Complete the polygon down to the bounding box bottom
-                    ctx.lineTo(c.width, c.height);
-                    ctx.lineTo(0, c.height);
-                    ctx.closePath();
-
-                    // Fill style representing the water
-                    ctx.fillStyle = `rgba(144, 202, 249, 0.35)`;
-                    ctx.fill();
-
-                    // Draw a crisp solid line on top to define edge
-                    ctx.beginPath();
-                    ctx.moveTo(0, targetY);
-                    ctx.lineTo(c.width, targetY);
-                    ctx.strokeStyle = `rgba(173, 216, 230, 0.8)`;
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                });
             });
         }
         requestAnimationFrame(updateProgressBars);
@@ -180,36 +372,29 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             // Placeholder tiny transparent pixel if no img
             img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-            tile.style.background = "#ffffff"; // Blank white tile as per Figma design
             tile.classList.add("placeholder");
         }
         img.alt = `Instrument ${item.id}`;
 
-        // Setup canvas overlay for liquid wave
-        const progressCanvas = document.createElement("canvas");
-        progressCanvas.classList.add("progress-canvas");
-        // Fixed dimension matching layout eliminates layout thrashing in rAF
-        progressCanvas.width = 118; // Scaled down 25% from 157px
-        progressCanvas.height = 118;
-
-        item.canvas = progressCanvas;
-        item.canvasCtx = progressCanvas.getContext('2d', { alpha: true });
-
         tile.appendChild(img);
-        tile.appendChild(progressCanvas);
-
+        
         // Append to specific category grid
-        let targetContainerId = "grid-tonals"; // Default
-        if (item.category === 'gongs') targetContainerId = "grid-gongs";
-        else if (item.category === 'singing-bars') targetContainerId = "grid-singing-bars";
+        let targetContainerId = "grid-gongs"; // Default
+        if (item.category === 'singing-bars') targetContainerId = "grid-singing-bars";
+        else if (item.category === 'tonals-tops') targetContainerId = "grid-tonals-tops";
+        else if (item.category === 'tonals-rods') targetContainerId = "grid-tonals-rods";
 
         const targetContainer = document.getElementById(targetContainerId);
-        if (targetContainer) targetContainer.appendChild(tile);
+        
+        // Wrap tile
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("tile-wrapper");
+        
+        wrapper.appendChild(tile);
+        if (targetContainer) targetContainer.appendChild(wrapper);
 
         if (item.image) {
-            tile.addEventListener("click", () => {
-                handleTileClick(item, tile);
-            });
+            tile.addEventListener("click", () => handleTileClick(item, tile));
         }
     });
 
@@ -225,14 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Deep black/grey background to match mockup
-        const bgGrad = ctx.createRadialGradient(
-            canvas.width / 2, canvas.height / 2, 0,
-            canvas.width / 2, canvas.height / 2, canvas.width
-        );
-        bgGrad.addColorStop(0, "rgba(10, 15, 20, 1)");
-        bgGrad.addColorStop(1, "rgba(0, 5, 10, 1)");
-        ctx.fillStyle = bgGrad;
+        ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         let overallEnergy = 0;
@@ -248,26 +426,23 @@ document.addEventListener("DOMContentLoaded", () => {
         // Speed of the organic "breathing" increases slightly with volume
         time += 0.01 + ((overallEnergy / 255) * 0.03);
 
-        const lineSpacing = canvas.height / numLines;
-        const lineSegments = 40; // Break line into segments to curve it
+        const verticalPadding = 80; // Added padding to prevent top/bottom clipping
+        const availableHeight = canvas.height - (verticalPadding * 2);
+        const lineSpacing = availableHeight / numLines;
+        const lineSegments = 40;
         const segmentWidth = canvas.width / lineSegments;
 
         for (let i = 0; i < numLines; i++) {
             // i=0 is lowest frequency (bottom of screen)
-            const baseY = canvas.height - (i * lineSpacing) - (lineSpacing / 2);
+            const baseY = canvas.height - verticalPadding - (i * lineSpacing) - (lineSpacing / 2);
 
             let targetAmplitude = 0;
             if (isAudioInitialized) {
-                // Focus tightly on the very low end (bass/ambient drones)
-                // By multiplying by only 50 bins instead of 200, we stretch the lowest
-                // frequencies across the entire vertical height of the 65 lines.
-                // This means deep drones will hit the middle and upper lines too.
                 const freqIndex = Math.floor((i / numLines) * 60);
                 const rawAmp = dataArray[freqIndex] / 255;
                 targetAmplitude = Math.pow(rawAmp, 1.5);
             }
 
-            // Smooth physics interpolation for the amplitude (elasticity)
             lineInertia[i] += (targetAmplitude - lineInertia[i]) * 0.1;
             const amplitude = lineInertia[i];
 
@@ -277,8 +452,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const x = j * segmentWidth;
                 let y = baseY;
 
-                // Add an organic flowing wave that runs left-to-right
-                // The wave gets much larger based on the frequency amplitude
                 const waveScale = amplitude * 40;
                 if (waveScale > 0.1) {
                     const ripple = Math.sin((j * 0.2) - (time * 5) + (i * 0.1)) * waveScale;
@@ -288,7 +461,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     y -= (ripple + detailRipple) * edgeTaper;
                 }
 
-                // Also add a subtle "breathing" even when silent
                 y += Math.sin(time + (i * 0.2) + (j * 0.1)) * 1.5;
 
                 if (j === 0) {
@@ -301,26 +473,47 @@ document.addEventListener("DOMContentLoaded", () => {
             // Thickness increases slightly with volume
             const baseLineWidth = 1 + (amplitude * 6);
 
-            // Color brightens and shifts with volume
-            let h = 210; // Blue/Cyan
-            let s = Math.floor(amplitude * 80);
-            let l = Math.floor(40 + Math.min(60, amplitude * 120));
-            let a = 0.3 + (amplitude * 0.7);
+            // Copper orange: hue in orange-copper range, punchier saturation
+            const irid = Math.sin(time * 0.6 + i * 0.12) * 2.5;
+            const h = 22 + irid;
+            const s = Math.floor(38 + amplitude * 28);
+            const l = Math.floor(34 + amplitude * 24 + Math.min(20, amplitude * amplitude * 36));
+            const a = 0.42 + amplitude * 0.48;
 
             ctx.lineJoin = "round";
             ctx.lineCap = "round";
 
             // To optimize heavily, we skip the shadowBlur API entirely.
             // Fake a glow by drawing a transparent fat line underneath, then the core outline on top.
+            const isMobile = window.innerWidth <= 768;
+
             if (amplitude > 0.05) {
-                ctx.lineWidth = baseLineWidth + (amplitude * 20); // Fat underlying glow
-                ctx.strokeStyle = `hsla(${h}, 100%, 70%, 0.15)`;
+                const glowGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+                glowGrad.addColorStop(0, `hsla(${h}, 40%, 48%, 0.11)`);
+                if (isMobile) {
+                    glowGrad.addColorStop(1, `hsla(${h}, 40%, 48%, 0.11)`);
+                } else {
+                    glowGrad.addColorStop(0.9, `hsla(${h}, 40%, 48%, 0.11)`);
+                    glowGrad.addColorStop(1, `hsla(${h}, 40%, 48%, 0)`);
+                }
+
+                ctx.lineWidth = baseLineWidth + (amplitude * 20);
+                ctx.strokeStyle = glowGrad;
                 ctx.stroke();
             }
 
             // Core visible line
+            const coreGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            coreGrad.addColorStop(0, `hsla(${h}, ${s}%, ${l}%, ${a})`);
+            if (isMobile) {
+                coreGrad.addColorStop(1, `hsla(${h}, ${s}%, ${l}%, ${a})`);
+            } else {
+                coreGrad.addColorStop(0.9, `hsla(${h}, ${s}%, ${l}%, ${a})`);
+                coreGrad.addColorStop(1, `hsla(${h}, ${s}%, ${l}%, 0)`);
+            }
+
             ctx.lineWidth = baseLineWidth;
-            ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${a})`;
+            ctx.strokeStyle = coreGrad;
             ctx.stroke();
         }
     }
