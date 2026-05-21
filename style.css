@@ -31,19 +31,18 @@ body {
 .top-row {
     display: flex;
     width: 100%;
-    height: auto;
-    max-height: 0;
+    height: 0;
     opacity: 0;
     overflow: hidden;
     gap: 40px;
     margin-bottom: 0;
-    transition: max-height 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+    transition: height 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
                 opacity 0.6s ease,
                 margin-bottom 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .top-row.visible {
-    max-height: 750px;
+    height: 750px;
     opacity: 1;
     margin-bottom: 40px;
 }
@@ -408,10 +407,10 @@ body {
         padding-left: 30px;
     }
     .top-row {
-        height: auto;
+        height: 0;
     }
     .top-row.visible {
-        max-height: 600px;
+        height: 600px;
     }
     .grid-container {
         column-count: 2;
@@ -448,10 +447,10 @@ body {
     }
     .top-row {
         flex-direction: column;
-        height: auto;
+        height: 0;
     }
     .top-row.visible {
-        max-height: 1200px;
+        height: 900px;
     }
     .canvas-container {
         width: 100%;
