@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderCurrentlyPlaying() {
         if (!currentlyPlayingInfo) return;
         
-        const playingInstruments = instruments.filter(inst => inst.activeInstances.length > 0 && !inst.activeInstances[0]?.isPaused);
+        const playingInstruments = instruments.filter(inst => inst.activeInstances.length > 0);
         const topRow = document.querySelector(".top-row");
         
         if (playingInstruments.length === 0) {
