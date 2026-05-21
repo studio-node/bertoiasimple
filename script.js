@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const materialStr = item.material === 'Unknown' ? '' : `<p>${item.material}</p>`;
             const yearStr = item.year === 'Unknown' ? '' : `<p>${item.year}</p>`;
             const sizeStr = item.size ? `<p>${item.size}</p>` : '';
-            const linkStr = item.link ? `<p><a href="${item.link}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-style: italic; font-weight: 600;">Learn more</a></p>` : '';
+            const linkStr = item.link ? `<p><a href="${item.link}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline; font-style: italic; font-weight: 600;">Learn more</a></p>` : '';
             const nameStr = item.name ? `<p><strong>${item.name}</strong></p>` : '';
             const isPaused = item.activeInstances[0]?.isPaused;
 
