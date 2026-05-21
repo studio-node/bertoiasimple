@@ -139,13 +139,13 @@ body {
 }
 
 .top-row.visible {
-    height: 750px;
+    height: 600px;
     opacity: 1;
     margin-bottom: 40px;
 }
 
 .canvas-container {
-    flex: 0 0 65%;
+    flex: 0 0 78%;
     position: relative;
 }
 

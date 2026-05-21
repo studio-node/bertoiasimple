@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Resize canvas to match its display size
     let canvasTransitioning = false;
     let canvasTransitionTimer = null;
-    const CANVAS_FINAL_HEIGHT = 750; // matches .top-row.visible height in CSS
+    const CANVAS_FINAL_HEIGHT = 600; // matches .top-row.visible height in CSS
 
     const resizeCanvas = () => {
         if (!canvas) return;
@@ -210,25 +210,32 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+    function collapseVisualizer() {
+        const topRow = document.querySelector(".top-row");
+        if (!topRow || !topRow.classList.contains("visible")) return;
+        canvasTransitioning = true;
+        clearTimeout(canvasTransitionTimer);
+        canvasTransitionTimer = setTimeout(() => {
+            canvasTransitioning = false;
+            resizeCanvas();
+        }, 1800);
+        topRow.classList.remove("visible");
+    }
+
     function renderCurrentlyPlaying() {
         if (!currentlyPlayingInfo) return;
         
-        const playingInstruments = instruments.filter(inst => inst.activeInstances.length > 0);
+        const playingInstruments = instruments.filter(inst => inst.activeInstances.length > 0 && !inst.activeInstances[0]?.isPaused);
         const topRow = document.querySelector(".top-row");
         
         if (playingInstruments.length === 0) {
-            currentlyPlayingInfo.innerHTML = '';
-            if (topRow && topRow.classList.contains("visible")) {
-                // Lock canvas resizing during the collapse animation
-                canvasTransitioning = true;
-                clearTimeout(canvasTransitionTimer);
-                canvasTransitionTimer = setTimeout(() => {
-                    canvasTransitioning = false;
-                    resizeCanvas();
-                }, 1800);
-                topRow.classList.remove("visible");
+            // Check if anything is even loaded (paused counts as still in session)
+            const anyActive = instruments.some(inst => inst.activeInstances.length > 0);
+            if (!anyActive) {
+                currentlyPlayingInfo.innerHTML = '';
+                collapseVisualizer();
+                return;
             }
-            return;
         }
 
         if (topRow) topRow.classList.add("visible");
@@ -397,6 +404,9 @@ document.addEventListener("DOMContentLoaded", () => {
             item.activeInstances = [];
             tileElement.classList.remove("active");
             renderCurrentlyPlaying();
+            // If nothing else is playing, collapse immediately
+            const anyStillPlaying = instruments.some(i => i.activeInstances.length > 0);
+            if (!anyStillPlaying) collapseVisualizer();
             return;
         }
 
