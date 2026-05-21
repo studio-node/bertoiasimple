@@ -430,6 +430,8 @@ body {
 .nav-logo img {
     height: 95px;
     width: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 /* Global Header */
