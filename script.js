@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Resize canvas to match its display size
     let canvasTransitioning = false;
+    let canvasTransitionTimer = null;
     const CANVAS_FINAL_HEIGHT = 750; // matches .top-row.visible height in CSS
 
     const resizeCanvas = () => {
@@ -217,6 +218,16 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (playingInstruments.length === 0) {
             currentlyPlayingInfo.innerHTML = '';
+            if (topRow && topRow.classList.contains("visible")) {
+                // Lock canvas resizing during the collapse animation
+                canvasTransitioning = true;
+                clearTimeout(canvasTransitionTimer);
+                canvasTransitionTimer = setTimeout(() => {
+                    canvasTransitioning = false;
+                    resizeCanvas();
+                }, 1800);
+                topRow.classList.remove("visible");
+            }
             return;
         }
 
