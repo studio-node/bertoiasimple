@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         source.start(0, offset);
-
+        startAnimate(); // Wake the visualizer loop
         if (item.activeInstances.length > 0) {
             item.activeInstances[0] = instance; // Replace paused instance
         } else {
@@ -380,6 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = document.createElement("img");
         if (item.image) {
             img.src = item.image;
+            img.loading = "lazy"; // Defer off-screen images
         } else {
             // Placeholder tiny transparent pixel if no img
             img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -411,16 +412,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 4. Spectrogram Animation Loop
     let time = 0;
+    let animating = false;
 
     // We will keep a history (or inertia) for each line to give it elastic physics
     const numLines = 65;
     const lineInertia = Array(numLines).fill(0);
 
     function animate() {
-        requestAnimationFrame(animate);
-
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -437,7 +436,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Speed of the organic "breathing" increases slightly with volume
         time += 0.01 + ((overallEnergy / 255) * 0.03);
 
-        const verticalPadding = 80; // Added padding to prevent top/bottom clipping
+        const verticalPadding = 20; // Minimal padding so lines fill the canvas
         const availableHeight = canvas.height - (verticalPadding * 2);
         const lineSpacing = availableHeight / numLines;
         const lineSegments = 40;
@@ -523,12 +522,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 coreGrad.addColorStop(1, `hsla(${h}, ${s}%, ${l}%, 0)`);
             }
 
-            ctx.lineWidth = baseLineWidth;
-            ctx.strokeStyle = coreGrad;
-            ctx.stroke();
+        ctx.lineWidth = baseLineWidth;
+        ctx.strokeStyle = coreGrad;
+        ctx.stroke();
+        }
+
+        // Check if any lines still have inertia - if not and no audio, we can rest
+        const stillMoving = lineInertia.some(v => v > 0.001);
+        if (isAudioInitialized && instruments.some(i => i.activeInstances.length > 0)) {
+            requestAnimationFrame(animate);
+        } else if (stillMoving) {
+            requestAnimationFrame(animate);
+        } else {
+            // Clear to white and stop looping until next play
+            animating = false;
+        }
+    }
+
+    function startAnimate() {
+        if (!animating) {
+            animating = true;
+            requestAnimationFrame(animate);
         }
     }
 
     // Start animation loop
-    animate();
+    startAnimate();
 });
