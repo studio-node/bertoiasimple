@@ -163,7 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (playingInstruments.length === 0) {
             currentlyPlayingInfo.innerHTML = '';
-            if (topRow) topRow.classList.remove("visible");
             return;
         }
 
