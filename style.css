@@ -152,7 +152,8 @@ body {
 }
 
 .canvas-container {
-    flex: 0 0 78%;
+    flex: 1 1 0;
+    min-width: 0;
     position: relative;
 }
 
@@ -206,7 +207,7 @@ body {
 }
 
 .currently-playing-container {
-    flex: 1;
+    flex: 0 0 320px;
     display: flex;
     flex-direction: column;
 }
@@ -267,7 +268,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font-size: 15px;
+    font-size: 12px;
     line-height: 1.4;
 }
 

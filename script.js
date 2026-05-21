@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const instruments = [
         // GONGS
         { id: 'gong-verdigris', category: 'gongs', image: "Instruments/GONGS/verdigris/verdigris_transp.png", sound: "Instruments/GONGS/verdigris/1 Verdigris.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Verdigris", material: "Unknown", year: "Unknown" },
-        { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.png", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Cat Gong", material: "Unknown", year: "Unknown" },
+        { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.png", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "", material: "Copper and bronze", year: "Made in the 1970s", size: "120 1/2 × 34 in. (306.1 × 86.4 cm)", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=3856" },
         { id: 'gong-blue', category: 'gongs', image: "Instruments/GONGS/blue/blue.png", sound: "Instruments/GONGS/blue/blue.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Blue", material: "Unknown", year: "Unknown" },
         { id: 'gong-2plytall', category: 'gongs', image: "Instruments/GONGS/2 Ply Tall/2plytall.png", sound: "Instruments/GONGS/2 Ply Tall/1 (1).ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Tall", material: "Unknown", year: "Unknown" },
         { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.png", sound: "Instruments/GONGS/2 ply square/2plysquare.wav", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Square", material: "Unknown", year: "Unknown" },
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         
                         if (inst.gainNode) {
                             const now = audioCtx.currentTime;
-                            const targetVolume = categoryVolumes[item.category] || 1.0;
+                            const targetVolume = (categoryVolumes[item.category] || 1.0) * (item.volumeMultiplier || 1);
                             if (item.isLooping) {
                                 // Cancel scheduled fade-out so it doesn't mute at the end of the loop
                                 inst.gainNode.gain.cancelScheduledValues(now);
@@ -189,6 +189,44 @@ document.addEventListener("DOMContentLoaded", () => {
                         stopInstance(instance, 0.1);
                         renderCurrentlyPlaying();
                     }
+                }
+            }
+
+            const volUpBtn = e.target.closest('.vol-up-btn');
+            if (volUpBtn) {
+                e.preventDefault();
+                const id = volUpBtn.dataset.id;
+                const item = instruments.find(i => i.id === id);
+                if (item && item.activeInstances.length > 0) {
+                    if (item.volLevel === undefined) item.volLevel = 1; // Default is Medium (level 1)
+                    if (item.volLevel < 2) item.volLevel++;
+                    item.volumeMultiplier = 0.5 + (item.volLevel * 0.5); // levels map to 0.5, 1.0, 1.5
+                    
+                    const instance = item.activeInstances[0];
+                    if (instance.gainNode && !instance.isPaused) {
+                        const targetVolume = (categoryVolumes[item.category] || 1.0) * item.volumeMultiplier;
+                        instance.gainNode.gain.setValueAtTime(targetVolume, audioCtx.currentTime);
+                    }
+                    renderCurrentlyPlaying();
+                }
+            }
+
+            const volDownBtn = e.target.closest('.vol-down-btn');
+            if (volDownBtn) {
+                e.preventDefault();
+                const id = volDownBtn.dataset.id;
+                const item = instruments.find(i => i.id === id);
+                if (item && item.activeInstances.length > 0) {
+                    if (item.volLevel === undefined) item.volLevel = 1; // Default is Medium (level 1)
+                    if (item.volLevel > 0) item.volLevel--;
+                    item.volumeMultiplier = 0.5 + (item.volLevel * 0.5);
+
+                    const instance = item.activeInstances[0];
+                    if (instance.gainNode && !instance.isPaused) {
+                        const targetVolume = (categoryVolumes[item.category] || 1.0) * item.volumeMultiplier;
+                        instance.gainNode.gain.setValueAtTime(targetVolume, audioCtx.currentTime);
+                    }
+                    renderCurrentlyPlaying();
                 }
             }
         });
@@ -274,15 +312,31 @@ document.addEventListener("DOMContentLoaded", () => {
         if (topRow) topRow.classList.add("visible");
 
         currentlyPlayingInfo.innerHTML = playingInstruments.map(item => {
-            const materialStr = item.material === 'Unknown' ? '' : `<p>material: ${item.material}</p>`;
-            const yearStr = item.year === 'Unknown' ? '' : `<p>made ${item.year}</p>`;
+            const materialStr = item.material === 'Unknown' ? '' : `<p>${item.material}</p>`;
+            const yearStr = item.year === 'Unknown' ? '' : `<p>${item.year}</p>`;
+            const sizeStr = item.size ? `<p>${item.size}</p>` : '';
+            const linkStr = item.link ? `<p><a href="${item.link}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-style: italic; font-weight: 600;">Learn more</a></p>` : '';
+            const nameStr = item.name ? `<p><strong>${item.name}</strong></p>` : '';
             const isPaused = item.activeInstances[0]?.isPaused;
+
+            let volIconPath = "M5 9v6h4l5 5V4L9 9H5zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z";
+            const volLevel = item.volLevel === undefined ? 1 : item.volLevel;
+            if (volLevel === 0) {
+                // Low (no waves)
+                volIconPath = "M7 9v6h4l5 5V4l-5 5H7z";
+            } else if (volLevel === 1) {
+                // Medium (1 wave)
+                volIconPath = "M5 9v6h4l5 5V4L9 9H5zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z";
+            } else if (volLevel >= 2) {
+                // High (2 waves)
+                volIconPath = "M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z";
+            }
 
             return `
                 <div class="playing-item">
                     <img src="${item.image || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'}" alt="${item.name}">
                     <div class="info-details">
-                        <p><strong>${item.name}</strong></p>
+                        ${nameStr}
                         <input type="range" id="prog-${item.id}" class="mini-progress scrubber" min="0" max="100" value="0" step="0.1" data-id="${item.id}">
                         <div class="playing-controls">
                             <button class="control-btn loop-btn ${item.isLooping ? 'active' : ''}" data-id="${item.id}" title="Toggle Loop">
@@ -294,9 +348,16 @@ document.addEventListener("DOMContentLoaded", () => {
                             <button class="control-btn stop-btn" data-id="${item.id}" title="Stop Audio">
                                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>
                             </button>
+                            <div style="display:flex; align-items:center; margin-left: 8px;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="opacity: 0.3;"><path d="${volIconPath}"/></svg>
+                                <button class="control-btn vol-down-btn" data-id="${item.id}" title="Volume Down" style="font-size:18px; font-weight:600; line-height:1; margin-left:4px; padding:0 4px;">−</button>
+                                <button class="control-btn vol-up-btn" data-id="${item.id}" title="Volume Up" style="font-size:18px; font-weight:600; line-height:1; margin-left:2px; padding:0 4px;">+</button>
+                            </div>
                         </div>
                         ${materialStr}
+                        ${sizeStr}
                         ${yearStr}
+                        ${linkStr}
                     </div>
                 </div>
             `;
@@ -367,7 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
         source.buffer = buffer;
 
         const gainNode = audioCtx.createGain();
-        const targetVolume = categoryVolumes[item.category] || 1.0;
+        const targetVolume = (categoryVolumes[item.category] || 1.0) * (item.volumeMultiplier || 1);
 
         // Fade in
         gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
