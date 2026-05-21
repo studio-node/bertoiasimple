@@ -12,7 +12,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
     window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    
+    if (window.ResizeObserver && canvas.parentElement) {
+        const resizeObserver = new ResizeObserver(() => {
+            resizeCanvas();
+        });
+        resizeObserver.observe(canvas.parentElement);
+    } else {
+        resizeCanvas();
+    }
 
     const fullscreenBtn = document.getElementById("fullscreen-btn");
     const canvasContainer = document.querySelector(".canvas-container");
@@ -151,12 +159,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!currentlyPlayingInfo) return;
         
         const playingInstruments = instruments.filter(inst => inst.activeInstances.length > 0);
+        const topRow = document.querySelector(".top-row");
         
         if (playingInstruments.length === 0) {
             currentlyPlayingInfo.innerHTML = '';
+            if (topRow) topRow.classList.remove("visible");
             return;
         }
 
+        if (topRow) topRow.classList.add("visible");
+        
         currentlyPlayingInfo.innerHTML = playingInstruments.map(item => {
             const materialStr = item.material === 'Unknown' ? '' : `<p>material: ${item.material}</p>`;
             const yearStr = item.year === 'Unknown' ? '' : `<p>made ${item.year}</p>`;
