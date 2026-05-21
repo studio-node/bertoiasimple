@@ -65,6 +65,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.exitFullscreen();
             }
         });
+
+        document.addEventListener("fullscreenchange", () => {
+            const textSpan = fullscreenBtn.querySelector('.fullscreen-text');
+            if (document.fullscreenElement) {
+                if (textSpan) textSpan.textContent = "Exit full screen";
+                // Increase drawing resolution to match the screen height so it doesn't stretch
+                canvas.height = window.innerHeight;
+                canvas.style.height = "100%";
+            } else {
+                if (textSpan) textSpan.textContent = "Go full screen";
+                canvas.height = CANVAS_FINAL_HEIGHT;
+                canvas.style.height = "";
+            }
+            resizeCanvas();
+        });
     }
 
     // 1. Setup Web Audio API
@@ -86,6 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // SINGING BARS
         { id: 'bars-1', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/Screenshot 2026-03-17 at 5.14.01 PM.png", sound: "Instruments/SINGING BARS/singingbars1/1m16s_swinging bars_gong_drone_rods_LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 1", material: "Unknown", year: "Unknown" },
+        { id: 'bars-2', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars2/SonambientInventory 010_transparent.png", sound: "Instruments/SINGING BARS/singingbars1/singingbars2/2m15s_swinging bars LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 2", material: "Unknown", year: "Unknown" },
+        { id: 'bars-3', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars3/SonambientInventory 011_transparent.png", sound: "Instruments/SINGING BARS/singingbars1/singingbars3/45s_swinging bars LP opening edit.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 3", material: "Unknown", year: "Unknown" },
 
         // TONALS - TOPS
         { id: 'tops-1', category: 'tonals-tops', image: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531-transparent.png", sound: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0531", material: "Unknown", year: "Unknown" },
@@ -127,6 +144,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     item.isLooping = !item.isLooping;
                     item.activeInstances.forEach(inst => {
                         if (inst.source) inst.source.loop = item.isLooping;
+                        
+                        if (inst.gainNode) {
+                            const now = audioCtx.currentTime;
+                            const targetVolume = categoryVolumes[item.category] || 1.0;
+                            if (item.isLooping) {
+                                // Cancel scheduled fade-out so it doesn't mute at the end of the loop
+                                inst.gainNode.gain.cancelScheduledValues(now);
+                                inst.gainNode.gain.setValueAtTime(targetVolume, now);
+                            } else {
+                                // Schedule fade-out for the end of the current iteration
+                                const elapsed = now - inst.startTime;
+                                const currentLoopPos = elapsed % inst.duration;
+                                const timeRemaining = inst.duration - currentLoopPos;
+                                if (timeRemaining > 1.0) {
+                                    inst.gainNode.gain.setValueAtTime(targetVolume, now + timeRemaining - 1.0);
+                                    inst.gainNode.gain.linearRampToValueAtTime(0, now + timeRemaining);
+                                }
+                            }
+                        }
                     });
                     renderCurrentlyPlaying();
                 }
@@ -140,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (item && item.activeInstances.length > 0) {
                     const instance = item.activeInstances[0];
                     const tile = document.querySelector(`.instrument-tile[data-id="${id}"]`);
-                    
+
                     if (instance.isPaused) {
                         // Resume playback
                         playAtOffset(item, tile, instance.pauseOffset);
@@ -150,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         let elapsed = audioCtx.currentTime - instance.startTime;
                         if (item.isLooping) elapsed = elapsed % instance.duration;
                         instance.pauseOffset = Math.min(elapsed, instance.duration);
-                        stopInstance(instance, 0.1); 
+                        stopInstance(instance, 0.1);
                         renderCurrentlyPlaying();
                     }
                 }
@@ -173,9 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     const tile = document.querySelector(`.instrument-tile[data-id="${id}"]`);
                     const instance = item.activeInstances[0];
                     const newOffset = (parseFloat(e.target.value) / 100) * instance.duration;
-                    
+
                     item.isScrubbing = false;
-                    
+
                     if (!instance.isPaused) {
                         stopInstance(instance, 0.1);
                         playAtOffset(item, tile, newOffset);
@@ -186,6 +222,33 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // Keep scroll position anchored when visualizer collapses/expands
+    const topRowContainer = document.querySelector(".top-row");
+    if (topRowContainer) {
+        let prevHeight = topRowContainer.getBoundingClientRect().height;
+        let prevMargin = parseFloat(window.getComputedStyle(topRowContainer).marginBottom) || 0;
+
+        const observer = new ResizeObserver(() => {
+            const currentHeight = topRowContainer.getBoundingClientRect().height;
+            const currentMargin = parseFloat(window.getComputedStyle(topRowContainer).marginBottom) || 0;
+
+            const currentTotal = currentHeight + currentMargin;
+            const prevTotal = prevHeight + prevMargin;
+            const diff = prevTotal - currentTotal;
+
+            // Only compensate scroll when the visualizer is collapsing (diff > 0). 
+            // When expanding, let the page naturally grow so the visualizer stays in view.
+            if (diff > 0.1 && window.scrollY > 0) {
+                window.scrollBy(0, -diff);
+            }
+
+            prevHeight = currentHeight;
+            prevMargin = currentMargin;
+        });
+        observer.observe(topRowContainer);
+    }
+
     function collapseVisualizer() {
         const topRow = document.querySelector(".top-row");
         if (!topRow || !topRow.classList.contains("visible")) return;
@@ -194,10 +257,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderCurrentlyPlaying() {
         if (!currentlyPlayingInfo) return;
-        
+
         const playingInstruments = instruments.filter(inst => inst.activeInstances.length > 0);
         const topRow = document.querySelector(".top-row");
-        
+
         if (playingInstruments.length === 0) {
             // Check if anything is even loaded (paused counts as still in session)
             const anyActive = instruments.some(inst => inst.activeInstances.length > 0);
@@ -209,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (topRow) topRow.classList.add("visible");
-        
+
         currentlyPlayingInfo.innerHTML = playingInstruments.map(item => {
             const materialStr = item.material === 'Unknown' ? '' : `<p>material: ${item.material}</p>`;
             const yearStr = item.year === 'Unknown' ? '' : `<p>made ${item.year}</p>`;
@@ -288,11 +351,11 @@ document.addEventListener("DOMContentLoaded", () => {
             instance.gainNode.gain.setValueAtTime(instance.gainNode.gain.value, now);
             instance.gainNode.gain.linearRampToValueAtTime(0, now + fadeOutDuration);
             setTimeout(() => {
-                try { instance.source.stop(); } catch (e) {}
+                try { instance.source.stop(); } catch (e) { }
                 instance.gainNode.disconnect();
             }, fadeOutDuration * 1000 + 50);
         } else {
-            try { instance.source.stop(); } catch (e) {}
+            try { instance.source.stop(); } catch (e) { }
         }
     }
 
@@ -302,14 +365,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const source = audioCtx.createBufferSource();
         source.buffer = buffer;
-        
+
         const gainNode = audioCtx.createGain();
         const targetVolume = categoryVolumes[item.category] || 1.0;
-        
+
         // Fade in
         gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
         gainNode.gain.linearRampToValueAtTime(targetVolume, audioCtx.currentTime + 0.15);
-        
+
         // Natural end fade out (1s) if not looping
         if (!item.isLooping && offset < buffer.duration) {
             const timeRemaining = buffer.duration - offset;
@@ -318,7 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + timeRemaining);
             }
         }
-        
+
         source.connect(gainNode);
         gainNode.connect(analyser); // Connect straight to master visualizer
 
@@ -356,7 +419,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             item.activeInstances.push(instance);
         }
-        
+
         if (tileElement) tileElement.classList.add("active");
         renderCurrentlyPlaying();
     }
@@ -398,7 +461,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const instance = item.activeInstances[0];
                 const progEl = document.getElementById(`prog-${item.id}`);
-                
+
                 if (progEl && !item.isScrubbing) {
                     let progress = 0;
                     if (instance.isPaused) {
@@ -439,7 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
         img.alt = `Instrument ${item.id}`;
 
         tile.appendChild(img);
-        
+
         // Append to specific category grid
         let targetContainerId = "grid-gongs"; // Default
         if (item.category === 'singing-bars') targetContainerId = "grid-singing-bars";
@@ -447,11 +510,12 @@ document.addEventListener("DOMContentLoaded", () => {
         else if (item.category === 'tonals-rods') targetContainerId = "grid-tonals-rods";
 
         const targetContainer = document.getElementById(targetContainerId);
-        
+
         // Wrap tile
         const wrapper = document.createElement("div");
         wrapper.classList.add("tile-wrapper");
-        
+        wrapper.dataset.category = item.category;
+
         wrapper.appendChild(tile);
         if (targetContainer) targetContainer.appendChild(wrapper);
 
@@ -576,9 +640,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 coreGrad.addColorStop(1, `hsla(${h}, ${s}%, ${l}%, 0)`);
             }
 
-        ctx.lineWidth = baseLineWidth;
-        ctx.strokeStyle = coreGrad;
-        ctx.stroke();
+            ctx.lineWidth = baseLineWidth;
+            ctx.strokeStyle = coreGrad;
+            ctx.stroke();
         }
 
         // Check if any lines still have inertia - if not and no audio, we can rest
@@ -602,4 +666,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Start animation loop
     startAnimate();
+
+    // Responsive layout for Singing Bars
+    function updateSingingBarsLayout() {
+        const isWide = window.innerWidth >= 1840;
+        const gongsContainer = document.getElementById("grid-gongs");
+        const barsContainer = document.getElementById("grid-singing-bars");
+        const barsSection = document.getElementById("section-singing-bars");
+
+        const barWrappers = document.querySelectorAll(".tile-wrapper[data-category='singing-bars']");
+
+        if (!gongsContainer || !barsContainer || !barsSection) return;
+
+        if (isWide) {
+            barsSection.style.display = "block";
+            barWrappers.forEach(w => barsContainer.appendChild(w));
+        } else {
+            barsSection.style.display = "none";
+            barWrappers.forEach(w => gongsContainer.appendChild(w));
+        }
+    }
+
+    window.addEventListener("resize", updateSingingBarsLayout);
+    updateSingingBarsLayout(); // Initial call
 });

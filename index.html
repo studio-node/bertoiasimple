@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bertoia Instruments</title>
+    <title>Harry's Barn</title>
+    <link rel="icon" type="image/png" href="bertoia_logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,500;0,900;1,500&family=Open+Sans:wght@300;400;600&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,45 +18,70 @@
 
     <!-- Splash Screen -->
     <div id="splash-screen">
-        <nav class="site-nav splash-nav">
-            <div class="nav-links left">
-                <a href="#">Background</a>
-                <a href="#">Sculptures</a>
-                <a href="#">Foundation</a>
-            </div>
-            <div class="nav-logo">
-                <img src="bertoia_logo.png" alt="Harry Bertoia Foundation">
-            </div>
-            <div class="nav-links right">
-                <a href="#">Catalogue Raisonne</a>
-                <a href="#">Shop</a>
-            </div>
-        </nav>
         <div class="splash-content">
-            <p class="splash-entering">Now entering...</p>
+            <p class="splash-entering">Now entering:</p>
             <h2 class="splash-title">Harry's Virtual Barn</h2>
-            <p class="splash-description">This is the closest you will come to a live experience<br>of Harry Bertoia's Sonambient Barn in a virtual<br>manner; create your own concert</p>
+            <p class="splash-description">This is the closest you will come to a live experience<br>of Harry Bertoia's
+                Sonambient Barn in a virtual<br>manner; create your own concert</p>
             <p class="splash-status" id="splash-status">Loading Sonambient experience...</p>
             <button class="splash-enter" id="splash-enter" style="display:none;">Enter →</button>
         </div>
     </div>
     <nav class="site-nav">
         <div class="nav-links left">
-            <a href="#">Background</a>
-            <a href="#">Sculptures</a>
-            <a href="#">Foundation</a>
+            <div class="nav-item">
+                <a href="#">History</a>
+                <div class="dropdown">
+                    <a href="#">Tape Archive</a>
+                    <a href="sonambient-barn.html">Sonambient Barn</a>
+                    <a href="#">Sculptures</a>
+                    <a href="#">Materials</a>
+                    <a href="#">Monotypes</a>
+                    <a href="#">Original Releases</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                <a href="#">Media</a>
+                <div class="dropdown">
+                    <a href="#">Photos</a>
+                    <a href="#">Videos</a>
+                    <a href="#">Articles</a>
+                    <a href="#">Virtual Barn Tour</a>
+                    <a href="#">Installation</a>
+                </div>
+            </div>
         </div>
         <div class="nav-logo">
-            <img src="bertoia_logo.png" alt="Harry Bertoia Foundation">
+            <a href="index.html">
+                <img src="bertoia_logo.png" alt="Harry's Barn Home">
+            </a>
         </div>
         <div class="nav-links right">
-            <a href="#">Catalogue Raisonne</a>
-            <a href="#">Shop</a>
+            <div class="nav-item">
+                <a href="#">Links</a>
+                <div class="dropdown">
+                    <a href="https://importantrecords.com/" target="_blank" rel="noopener noreferrer">Imprec</a>
+                    <a href="https://sonambient.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a>
+                    <a href="https://catalogue.harrybertoia.org/" target="_blank" rel="noopener noreferrer">Harry
+                        Bertoia Catalogue Raisonné</a>
+                    <a href="https://harrybertoia.org/" target="_blank" rel="noopener noreferrer">Harry Bertoia
+                        Foundation</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                <a href="#">Shop</a>
+                <div class="dropdown">
+                    <a href="https://importantrecords.com/collections/sonambient" target="_blank"
+                        rel="noopener noreferrer">Imprec Sonambient Shop</a>
+                    <a href="https://harrybertoia.org/shop/" target="_blank" rel="noopener noreferrer">Harry Bertoia
+                        Foundation Shop</a>
+                </div>
+            </div>
         </div>
     </nav>
 
     <header class="site-header">
-        <h1>HARRY BERTOIA'S SONAMBIENT</h1>
+        <h1>Harry's Virtual Barn</h1>
         <p>Select an instrument to hear its sound</p>
     </header>
 
@@ -63,8 +90,9 @@
             <div class="canvas-container">
                 <canvas id="spectrogram-canvas"></canvas>
                 <button id="fullscreen-btn" title="Fullscreen Visualizer">
+                    <span class="fullscreen-text">Go full screen</span>
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
                     </svg>
                 </button>
             </div>
@@ -73,28 +101,25 @@
                 <div id="currently-playing-info">
                     <!-- Dynamic info goes here -->
                 </div>
+                <p class="view-more-blurb">View more instruments below &darr;</p>
             </div>
         </div>
 
         <div class="bottom-row">
             <main id="instrument-categories">
                 <section class="category-section">
-                    <h2>Tonals: Rods</h2>
                     <div class="grid-container" id="grid-tonals-rods"></div>
                 </section>
 
                 <section class="category-section">
-                    <h2>Tonals: Tops</h2>
                     <div class="grid-container" id="grid-tonals-tops"></div>
                 </section>
 
                 <section class="category-section">
-                    <h2>Gongs</h2>
                     <div class="grid-container" id="grid-gongs"></div>
                 </section>
 
-                <section class="category-section">
-                    <h2>Singing Bars</h2>
+                <section class="category-section" id="section-singing-bars">
                     <div class="grid-container" id="grid-singing-bars"></div>
                 </section>
             </main>
