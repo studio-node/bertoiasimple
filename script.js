@@ -41,41 +41,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // Resize canvas to match its display size
-    let canvasTransitioning = false;
-    let canvasTransitionTimer = null;
-    const CANVAS_FINAL_HEIGHT = 600; // matches .top-row.visible height in CSS
-
+    // Canvas height is fixed in CSS at 600px — only width needs updating on resize.
+    const CANVAS_FINAL_HEIGHT = 540;
     const resizeCanvas = () => {
         if (!canvas) return;
-        if (canvasTransitioning) return; // don't resize mid-animation
         canvas.width = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
-        canvas.height = canvas.clientHeight || CANVAS_FINAL_HEIGHT;
+        // Never touch canvas.height — it's fixed to prevent glitch during transitions
     };
+    canvas.height = CANVAS_FINAL_HEIGHT;
+    resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
-    
-    if (window.ResizeObserver && canvas.parentElement) {
-        const resizeObserver = new ResizeObserver(() => {
-            resizeCanvas();
-        });
-        resizeObserver.observe(canvas.parentElement);
-    } else {
-        resizeCanvas();
-    }
 
-    // Pre-sizes canvas to its final dimensions before the reveal animation
-    // so overflow:hidden clips a fully-rendered canvas instead of a growing one
-    function primeCanvasForReveal() {
-        canvasTransitioning = true;
-        const container = canvas.parentElement;
-        canvas.width = container?.clientWidth || window.innerWidth * 0.65;
-        canvas.height = CANVAS_FINAL_HEIGHT;
-        // After transition completes (1.6s + buffer), unlock resizing
-        setTimeout(() => {
-            canvasTransitioning = false;
-            resizeCanvas();
-        }, 1800);
-    }
 
     const fullscreenBtn = document.getElementById("fullscreen-btn");
     const canvasContainer = document.querySelector(".canvas-container");
@@ -213,12 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function collapseVisualizer() {
         const topRow = document.querySelector(".top-row");
         if (!topRow || !topRow.classList.contains("visible")) return;
-        canvasTransitioning = true;
-        clearTimeout(canvasTransitionTimer);
-        canvasTransitionTimer = setTimeout(() => {
-            canvasTransitioning = false;
-            resizeCanvas();
-        }, 1800);
         topRow.classList.remove("visible");
     }
 
@@ -409,9 +379,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!anyStillPlaying) collapseVisualizer();
             return;
         }
-
-        // Pre-size canvas & lock resizing so the grow animation is glitch-free
-        primeCanvasForReveal();
 
         // Reveal visualizer & start animation immediately — don't wait for buffer load
         const topRow = document.querySelector(".top-row");
