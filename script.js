@@ -335,6 +335,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Reveal visualizer & start animation immediately — don't wait for buffer load
+        const topRow = document.querySelector(".top-row");
+        if (topRow) topRow.classList.add("visible");
+        startAnimate();
+
         playAtOffset(item, tileElement, 0);
     }
 
