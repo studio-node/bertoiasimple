@@ -14,11 +14,107 @@
 }
 
 body {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     min-height: 100vh;
     overflow-x: hidden;
+}
+
+/* ── Splash Screen ─────────────────────────────── */
+#splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.6s ease;
+}
+
+#splash-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.splash-nav {
+    flex-shrink: 0;
+}
+
+.splash-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    gap: 0;
+}
+
+.splash-entering {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-color);
+    opacity: 0.6;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+}
+
+.splash-title {
+    font-family: 'Open Sans', sans-serif;
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.splash-description {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text-color);
+    opacity: 0.7;
+    line-height: 1.7;
+    max-width: 380px;
+    margin-bottom: 36px;
+}
+
+.splash-status {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-color);
+    opacity: 0.45;
+    letter-spacing: 0.01em;
+}
+
+.splash-enter {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+    background: none;
+    border: 1px solid rgba(0,0,0,0.2);
+    padding: 10px 28px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    border-radius: 2px;
+    transition: border-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.splash-enter:hover {
+    border-color: rgba(0,0,0,0.6);
+    transform: translateY(-1px);
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .main-content-container {

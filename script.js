@@ -4,6 +4,43 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext("2d");
     const currentlyPlayingInfo = document.getElementById("currently-playing-info");
 
+    // ── Splash Screen ──────────────────────────────────────────
+    const splashScreen = document.getElementById("splash-screen");
+    const splashStatus = document.getElementById("splash-status");
+    const splashEnter = document.getElementById("splash-enter");
+
+    function dismissSplash() {
+        splashScreen.classList.add("hidden");
+        setTimeout(() => splashScreen.remove(), 700);
+    }
+
+    splashEnter.addEventListener("click", dismissSplash);
+
+    // Track instrument images — we'll register them after the grid renders
+    function trackImageLoading(images) {
+        if (images.length === 0) {
+            splashStatus.style.display = "none";
+            splashEnter.style.display = "inline-block";
+            return;
+        }
+        let loaded = 0;
+        const onLoad = () => {
+            loaded++;
+            if (loaded >= images.length) {
+                splashStatus.style.display = "none";
+                splashEnter.style.display = "inline-block";
+            }
+        };
+        images.forEach(img => {
+            if (img.complete) { onLoad(); }
+            else {
+                img.addEventListener("load", onLoad);
+                img.addEventListener("error", onLoad); // count errors too
+            }
+        });
+    }
+
+
     // Resize canvas to match its display size
     const resizeCanvas = () => {
         if (canvas) {
@@ -414,6 +451,10 @@ document.addEventListener("DOMContentLoaded", () => {
             tile.addEventListener("click", () => handleTileClick(item, tile));
         }
     });
+
+    // Start tracking image loads for the splash screen
+    const allTileImages = Array.from(document.querySelectorAll(".instrument-tile img[loading='lazy']"));
+    trackImageLoading(allTileImages);
 
     // 4. Spectrogram Animation Loop
     let time = 0;
