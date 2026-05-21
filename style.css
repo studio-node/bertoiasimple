@@ -303,7 +303,7 @@ body {
     grid-template-columns: repeat(auto-fit, 384px);
     gap: 60px;
     align-items: flex-start;
-    justify-content: start;
+    justify-content: center;
 }
 
 /* Global Navbar */
