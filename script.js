@@ -101,38 +101,39 @@ document.addEventListener("DOMContentLoaded", () => {
     let isAudioInitialized = false;
 
     // Instruments Configuration
+    // Instruments Configuration
     const instruments = [
         // GONGS
-        { id: 'gong-verdigris', category: 'gongs', image: "Instruments/GONGS/verdigris/verdigris_transp.png", sound: "Instruments/GONGS/verdigris/1 Verdigris.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Verdigris", material: "Unknown", year: "Unknown" },
-        { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.png", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "", material: "Copper and bronze", year: "Made in the 1970s", size: "120 1/2 × 34 in. (306.1 × 86.4 cm)", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=3856" },
-        { id: 'gong-blue', category: 'gongs', image: "Instruments/GONGS/blue/blue.png", sound: "Instruments/GONGS/blue/blue.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Blue", material: "Unknown", year: "Unknown" },
-        { id: 'gong-2plytall', category: 'gongs', image: "Instruments/GONGS/2 Ply Tall/2plytall.png", sound: "Instruments/GONGS/2 Ply Tall/1 (1).ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Tall", material: "Unknown", year: "Unknown" },
-        { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.png", sound: "Instruments/GONGS/2 ply square/2plysquare.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Square", material: "Unknown", year: "Unknown" },
-        { id: 'gong-round', category: 'gongs', image: "Instruments/GONGS/round gong by door/HUB_1151_GONG_TRANSP.png", sound: "Instruments/GONGS/round gong by door/1.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Round Gong", material: "Unknown", year: "Unknown" },
-        { id: 'gong-gravegong', category: 'gongs', image: "Instruments/GONGS/gravegong/gravegong.png", sound: "Instruments/GONGS/gravegong/3s.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Grave Gong", material: "Unknown", year: "Unknown" },
+        { id: 'gong-verdigris', category: 'gongs', image: "Instruments/GONGS/verdigris/verdigris_transp.webp", sound: "Instruments/GONGS/verdigris/1 Verdigris.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Verdigris", material: "Unknown", year: "Unknown" },
+        { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.webp", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "", material: "Copper and bronze", year: "Made in the 1970s", size: "120 1/2 × 34 in. (306.1 × 86.4 cm)", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=3856" },
+        { id: 'gong-blue', category: 'gongs', image: "Instruments/GONGS/blue/blue.webp", sound: "Instruments/GONGS/blue/blue.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Blue", material: "Unknown", year: "Unknown" },
+        { id: 'gong-2plytall', category: 'gongs', image: "Instruments/GONGS/2 Ply Tall/2plytall.webp", sound: "Instruments/GONGS/2 Ply Tall/1 (1).ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Tall", material: "Unknown", year: "Unknown" },
+        { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.webp", sound: "Instruments/GONGS/2 ply square/2plysquare.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Square", material: "Unknown", year: "Unknown" },
+        { id: 'gong-round', category: 'gongs', image: "Instruments/GONGS/round gong by door/HUB_1151_GONG_TRANSP.webp", sound: "Instruments/GONGS/round gong by door/1.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Round Gong", material: "Unknown", year: "Unknown" },
+        { id: 'gong-gravegong', category: 'gongs', image: "Instruments/GONGS/gravegong/gravegong.webp", sound: "Instruments/GONGS/gravegong/3s.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Grave Gong", material: "Unknown", year: "Unknown" },
 
         // SINGING BARS
-        { id: 'bars-1', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/Screenshot 2026-03-17 at 5.14.01 PM.png", sound: "Instruments/SINGING BARS/singingbars1/1m16s_swinging bars_gong_drone_rods_LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 1", material: "Unknown", year: "Unknown" },
-        { id: 'bars-2', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars2/SonambientInventory 010_transparent.png", sound: "Instruments/SINGING BARS/singingbars1/singingbars2/2m15s_swinging bars LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 2", material: "Unknown", year: "Unknown" },
-        { id: 'bars-3', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars3/SonambientInventory 011_transparent.png", sound: "Instruments/SINGING BARS/singingbars1/singingbars3/45s_swinging bars LP opening edit.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 3", material: "Unknown", year: "Unknown" },
+        { id: 'bars-1', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/Screenshot 2026-03-17 at 5.14.01 PM.webp", sound: "Instruments/SINGING BARS/singingbars1/1m16s_swinging bars_gong_drone_rods_LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 1", material: "Unknown", year: "Unknown" },
+        { id: 'bars-2', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars2/SonambientInventory 010_transparent.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars2/2m15s_swinging bars LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 2", material: "Unknown", year: "Unknown" },
+        { id: 'bars-3', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars3/SonambientInventory 011_transparent.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars3/45s_swinging bars LP opening edit.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 3", material: "Unknown", year: "Unknown" },
 
         // TONALS - TOPS
-        { id: 'tops-1', category: 'tonals-tops', image: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531-transparent.png", sound: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0531", material: "Unknown", year: "Unknown" },
-        { id: 'tops-2', category: 'tonals-tops', image: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729_transparent.png", sound: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729.ogg", buffer: null, activeInstances: [], isLooping: false, name: "6 HUB 0729", material: "Unknown", year: "Unknown" },
-        { id: 'tops-3', category: 'tonals-tops', image: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949_transparent.png", sound: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949.ogg", buffer: null, activeInstances: [], isLooping: false, name: "7 HUB 0949", material: "Unknown", year: "Unknown" },
-        { id: 'tops-4', category: 'tonals-tops', image: "Instruments/TONALS/tops/9 HUB_696/HUB_0696_transparent.png", sound: "Instruments/TONALS/tops/9 HUB_696/c 20s_thick tops_one hit_knocking decay_9.ogg", buffer: null, activeInstances: [], isLooping: false, name: "9 HUB 0696", material: "Unknown", year: "Unknown" },
-        { id: 'tops-5', category: 'tonals-tops', image: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0960_transparent.png", sound: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0360.ogg", buffer: null, activeInstances: [], isLooping: false, name: "3 HUB 0960", material: "Unknown", year: "Unknown" },
-        { id: 'tops-6', category: 'tonals-tops', image: "Instruments/TONALS/tops/8 HUB_584/a HUB_0584_transparent.png", sound: "Instruments/TONALS/tops/8 HUB_584/a 1m_thin tops  shimmering_UH_IB_1m.ogg", buffer: null, activeInstances: [], isLooping: false, name: "8 HUB 0584", material: "Unknown", year: "Unknown" },
-        { id: 'tops-7', category: 'tonals-tops', image: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749_transparent.png", sound: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749.ogg", buffer: null, activeInstances: [], isLooping: false, name: "4 HUB 0749", material: "Unknown", year: "Unknown" },
+        { id: 'tops-1', category: 'tonals-tops', image: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531-transparent.webp", sound: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0531", material: "Unknown", year: "Unknown" },
+        { id: 'tops-2', category: 'tonals-tops', image: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729_transparent.webp", sound: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729.ogg", buffer: null, activeInstances: [], isLooping: false, name: "6 HUB 0729", material: "Unknown", year: "Unknown" },
+        { id: 'tops-3', category: 'tonals-tops', image: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949_transparent.webp", sound: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949.ogg", buffer: null, activeInstances: [], isLooping: false, name: "7 HUB 0949", material: "Unknown", year: "Unknown" },
+        { id: 'tops-4', category: 'tonals-tops', image: "Instruments/TONALS/tops/9 HUB_696/HUB_0696_transparent.webp", sound: "Instruments/TONALS/tops/9 HUB_696/c 20s_thick tops_one hit_knocking decay_9.ogg", buffer: null, activeInstances: [], isLooping: false, name: "9 HUB 0696", material: "Unknown", year: "Unknown" },
+        { id: 'tops-5', category: 'tonals-tops', image: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0960_transparent.webp", sound: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0360.ogg", buffer: null, activeInstances: [], isLooping: false, name: "3 HUB 0960", material: "Unknown", year: "Unknown" },
+        { id: 'tops-6', category: 'tonals-tops', image: "Instruments/TONALS/tops/8 HUB_584/a HUB_0584_transparent.webp", sound: "Instruments/TONALS/tops/8 HUB_584/a 1m_thin tops  shimmering_UH_IB_1m.ogg", buffer: null, activeInstances: [], isLooping: false, name: "8 HUB 0584", material: "Unknown", year: "Unknown" },
+        { id: 'tops-7', category: 'tonals-tops', image: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749_transparent.webp", sound: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749.ogg", buffer: null, activeInstances: [], isLooping: false, name: "4 HUB 0749", material: "Unknown", year: "Unknown" },
 
         // TONALS - RODS
-        { id: 'rods-1', category: 'tonals-rods', image: "Instruments/TONALS/rods/4 HUB_514/4 HUB_0514_transparent.png", sound: "Instruments/TONALS/rods/4 HUB_514/4_HUB_0514.ogg", buffer: null, activeInstances: [], isLooping: false, name: "4 HUB 0514", material: "Unknown", year: "Unknown" },
-        { id: 'rods-2', category: 'tonals-rods', image: "Instruments/TONALS/rods/3 HUB_724/3 HUB_0724_transparent.png", sound: "Instruments/TONALS/rods/3 HUB_724/3_HUB_0724.ogg", buffer: null, activeInstances: [], isLooping: false, name: "3 HUB 0724", material: "Unknown", year: "Unknown" },
-        { id: 'rods-3', category: 'tonals-rods', image: "Instruments/TONALS/rods/1 HUB_399/1 HUB_0399_transparent.png", sound: "Instruments/TONALS/rods/1 HUB_399/1_HUB_0399.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0399", material: "Unknown", year: "Unknown" },
-        { id: 'rods-4', category: 'tonals-rods', image: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521_transparent.png", sound: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521.ogg", buffer: null, activeInstances: [], isLooping: false, name: "10 HUB 0521", material: "Unknown", year: "Unknown" },
-        { id: 'rods-5', category: 'tonals-rods', image: "Instruments/TONALS/rods/5 HUB_663/5 HUB_0663_transparent.png", sound: "Instruments/TONALS/rods/5 HUB_663/5_HUB_0663.ogg", buffer: null, activeInstances: [], isLooping: false, name: "5 HUB 0663", material: "Unknown", year: "Unknown" },
-        { id: 'rods-6', category: 'tonals-rods', image: "Instruments/TONALS/rods/2A HUB_854/2 HUB_0854_transparent.png", sound: "Instruments/TONALS/rods/2A HUB_854/2A_HUB_0854.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2A HUB 0854", material: "Unknown", year: "Unknown" },
-        { id: 'rods-7', category: 'tonals-rods', image: "Instruments/TONALS/rods/2 HUB_0663/2 HUB_0663_transparent.png", sound: "Instruments/TONALS/rods/2 HUB_0663/2 vidsource2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 HUB 0663", material: "Unknown", year: "Unknown" }
+        { id: 'rods-1', category: 'tonals-rods', image: "Instruments/TONALS/rods/4 HUB_514/4 HUB_0514_transparent.webp", sound: "Instruments/TONALS/rods/4 HUB_514/4_HUB_0514.ogg", buffer: null, activeInstances: [], isLooping: false, name: "4 HUB 0514", material: "Unknown", year: "Unknown" },
+        { id: 'rods-2', category: 'tonals-rods', image: "Instruments/TONALS/rods/3 HUB_724/3 HUB_0724_transparent.webp", sound: "Instruments/TONALS/rods/3 HUB_724/3_HUB_0724.ogg", buffer: null, activeInstances: [], isLooping: false, name: "3 HUB 0724", material: "Unknown", year: "Unknown" },
+        { id: 'rods-3', category: 'tonals-rods', image: "Instruments/TONALS/rods/1 HUB_399/1 HUB_0399_transparent.webp", sound: "Instruments/TONALS/rods/1 HUB_399/1_HUB_0399.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0399", material: "Unknown", year: "Unknown" },
+        { id: 'rods-4', category: 'tonals-rods', image: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521_transparent.webp", sound: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521.ogg", buffer: null, activeInstances: [], isLooping: false, name: "10 HUB 0521", material: "Unknown", year: "Unknown" },
+        { id: 'rods-5', category: 'tonals-rods', image: "Instruments/TONALS/rods/5 HUB_663/5 HUB_0663_transparent.webp", sound: "Instruments/TONALS/rods/5 HUB_663/5_HUB_0663.ogg", buffer: null, activeInstances: [], isLooping: false, name: "5 HUB 0663", material: "Unknown", year: "Unknown" },
+        { id: 'rods-6', category: 'tonals-rods', image: "Instruments/TONALS/rods/2A HUB_854/2 HUB_0854_transparent.webp", sound: "Instruments/TONALS/rods/2A HUB_854/2A_HUB_0854.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2A HUB 0854", material: "Unknown", year: "Unknown" },
+        { id: 'rods-7', category: 'tonals-rods', image: "Instruments/TONALS/rods/2 HUB_0663/2 HUB_0663_transparent.webp", sound: "Instruments/TONALS/rods/2 HUB_0663/2 vidsource2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 HUB 0663", material: "Unknown", year: "Unknown" }
     ];
     if (currentlyPlayingInfo) {
         currentlyPlayingInfo.addEventListener("click", (e) => {
@@ -434,6 +435,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function playAtOffset(item, tileElement, offset = 0) {
         const buffer = await loadAudioBuffer(item);
+        
+        // If loading was cancelled while fetching the audio, exit early
+        if (!item.isLoading && offset === 0) {
+            if (tileElement) tileElement.classList.remove("loading");
+            return;
+        }
+        
+        item.isLoading = false;
+        if (tileElement) {
+            tileElement.classList.remove("loading");
+            tileElement.classList.add("active");
+        }
+        
         if (!buffer) return;
 
         const source = audioCtx.createBufferSource();
@@ -494,7 +508,6 @@ document.addEventListener("DOMContentLoaded", () => {
             item.activeInstances.push(instance);
         }
 
-        if (tileElement) tileElement.classList.add("active");
         renderCurrentlyPlaying();
     }
 
@@ -505,14 +518,24 @@ document.addEventListener("DOMContentLoaded", () => {
             audioCtx.resume();
         }
 
+        // Handle click while loading (cancellation)
+        if (item.isLoading) {
+            item.isLoading = false;
+            tileElement.classList.remove("loading");
+            // If visualizer was started but nothing is playing or loading, collapse it
+            const anyActive = instruments.some(i => i.activeInstances.length > 0 || i.isLoading);
+            if (!anyActive) collapseVisualizer();
+            return;
+        }
+
         if (item.activeInstances.length > 0) {
             const instance = item.activeInstances[0];
             stopInstance(instance, 1.5); // 1.5s manual stop fade
             item.activeInstances = [];
             tileElement.classList.remove("active");
             renderCurrentlyPlaying();
-            // If nothing else is playing, collapse immediately
-            const anyStillPlaying = instruments.some(i => i.activeInstances.length > 0);
+            // If nothing else is playing or loading, collapse immediately
+            const anyStillPlaying = instruments.some(i => i.activeInstances.length > 0 || i.isLoading);
             if (!anyStillPlaying) collapseVisualizer();
             return;
         }
@@ -522,6 +545,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (topRow) topRow.classList.add("visible");
         startAnimate();
 
+        // Mark as loading and play
+        item.isLoading = true;
+        tileElement.classList.add("loading");
         playAtOffset(item, tileElement, 0);
     }
 
@@ -588,7 +614,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = document.createElement("img");
         if (item.image) {
             img.src = item.image;
-            // Eagerly load optimized smaller images to avoid layout shift and splash screen deadlock
+            // Set explicit sizes to prevent CLS layout shift
+            img.width = 180;
+            img.height = 240;
         } else {
             // Placeholder tiny transparent pixel if no img
             img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -616,6 +644,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (item.image) {
             tile.addEventListener("click", () => handleTileClick(item, tile));
+            tile.addEventListener("mouseenter", () => {
+                // Proactively preload audio buffer on hover to eliminate lag on slower connections
+                if (!audioCtx) initAudio();
+                loadAudioBuffer(item);
+            });
         }
     });
 
@@ -630,6 +663,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // We will keep a history (or inertia) for each line to give it elastic physics
     const numLines = 65;
     const lineInertia = Array(numLines).fill(0);
+
+    // Precompute edgeTaper values to optimize visualizer math for 20x CPU slowdown
+    const lineSegments = 40;
+    const edgeTaperCache = Array.from({ length: lineSegments + 1 }, (_, j) => Math.sin((j / lineSegments) * Math.PI));
 
     function animate() {
         // Clear to transparent at the start of frame
@@ -651,7 +688,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const verticalPadding = 20; // Minimal padding so lines fill the canvas
         const availableHeight = canvas.height - (verticalPadding * 2);
         const lineSpacing = availableHeight / numLines;
-        const lineSegments = 40;
         const segmentWidth = canvas.width / lineSegments;
 
         for (let i = 0; i < numLines; i++) {
@@ -678,7 +714,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (waveScale > 0.1) {
                     const ripple = Math.sin((j * 0.2) - (time * 5) + (i * 0.1)) * waveScale;
                     const detailRipple = Math.cos((j * 0.5) - (time * 2)) * (waveScale * 0.3);
-                    const edgeTaper = Math.sin((j / lineSegments) * Math.PI);
+                    const edgeTaper = edgeTaperCache[j];
 
                     y -= (ripple + detailRipple) * edgeTaper;
                 }

@@ -716,3 +716,24 @@ body {
     color: var(--text-color);
     margin-bottom: 24px;
 }
+
+/* Loading state for instrument tiles */
+.instrument-tile.loading img {
+    animation: tilePulse 1.2s infinite ease-in-out;
+    opacity: 0.6;
+}
+
+@keyframes tilePulse {
+    0% {
+        opacity: 0.4;
+        transform: scale(0.98);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+    100% {
+        opacity: 0.4;
+        transform: scale(0.98);
+    }
+}
