@@ -458,7 +458,7 @@ body {
 
 .site-header p {
     font-size: 18px;
-    font-weight: 300;
+    font-weight: 500;
     letter-spacing: -0.4px;
 }
 
@@ -480,12 +480,15 @@ body {
 #grid-tonals-rods {
     min-height: 1200px;
 }
+
 #grid-tonals-tops {
     min-height: 850px;
 }
+
 #grid-gongs {
     min-height: 1000px;
 }
+
 #grid-singing-bars {
     min-height: 400px;
 }
@@ -746,10 +749,12 @@ body {
         opacity: 0.4;
         transform: scale(0.98);
     }
+
     50% {
         opacity: 0.8;
         transform: scale(1.02);
     }
+
     100% {
         opacity: 0.4;
         transform: scale(0.98);
