@@ -43,10 +43,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Canvas height is fixed in CSS at 600px — only width needs updating on resize.
     const CANVAS_FINAL_HEIGHT = 540;
+    let maskGrad = null;
     const resizeCanvas = () => {
         if (!canvas) return;
         canvas.width = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
         // Never touch canvas.height — it's fixed to prevent glitch during transitions
+        
+        // Cache the horizontal gradient mask to avoid creating gradients on every frame
+        const isMobile = window.innerWidth <= 768;
+        maskGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        maskGrad.addColorStop(0, 'rgba(0, 0, 0, 1)');
+        if (isMobile) {
+            maskGrad.addColorStop(1, 'rgba(0, 0, 0, 1)');
+        } else {
+            maskGrad.addColorStop(0.9, 'rgba(0, 0, 0, 1)');
+            maskGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        }
     };
     canvas.height = CANVAS_FINAL_HEIGHT;
     resizeCanvas();
@@ -95,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.png", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "", material: "Copper and bronze", year: "Made in the 1970s", size: "120 1/2 × 34 in. (306.1 × 86.4 cm)", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=3856" },
         { id: 'gong-blue', category: 'gongs', image: "Instruments/GONGS/blue/blue.png", sound: "Instruments/GONGS/blue/blue.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Blue", material: "Unknown", year: "Unknown" },
         { id: 'gong-2plytall', category: 'gongs', image: "Instruments/GONGS/2 Ply Tall/2plytall.png", sound: "Instruments/GONGS/2 Ply Tall/1 (1).ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Tall", material: "Unknown", year: "Unknown" },
-        { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.png", sound: "Instruments/GONGS/2 ply square/2plysquare.wav", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Square", material: "Unknown", year: "Unknown" },
+        { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.png", sound: "Instruments/GONGS/2 ply square/2plysquare.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Square", material: "Unknown", year: "Unknown" },
         { id: 'gong-round', category: 'gongs', image: "Instruments/GONGS/round gong by door/HUB_1151_GONG_TRANSP.png", sound: "Instruments/GONGS/round gong by door/1.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Round Gong", material: "Unknown", year: "Unknown" },
         { id: 'gong-gravegong', category: 'gongs', image: "Instruments/GONGS/gravegong/gravegong.png", sound: "Instruments/GONGS/gravegong/3s.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Grave Gong", material: "Unknown", year: "Unknown" },
 
@@ -475,6 +487,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         source.start(0, offset);
         startAnimate(); // Wake the visualizer loop
+        startProgressLoop(); // Wake the progress bar updates
         if (item.activeInstances.length > 0) {
             item.activeInstances[0] = instance; // Replace paused instance
         } else {
@@ -512,35 +525,56 @@ document.addEventListener("DOMContentLoaded", () => {
         playAtOffset(item, tileElement, 0);
     }
 
-    // Update mini progress bars in the Currently Playing section
+    // Update mini progress bars in the Currently Playing section (only runs when audio is active)
+    let isProgressLoopRunning = false;
+
     function updateProgressBars() {
-        if (audioCtx) {
-            const currentTime = audioCtx.currentTime;
-
-            instruments.forEach(item => {
-                if (item.activeInstances.length === 0) return;
-
-                const instance = item.activeInstances[0];
-                const progEl = document.getElementById(`prog-${item.id}`);
-
-                if (progEl && !item.isScrubbing) {
-                    let progress = 0;
-                    if (instance.isPaused) {
-                        progress = instance.pauseOffset / instance.duration;
-                    } else {
-                        const elapsed = currentTime - instance.startTime;
-                        const currentLoopPos = elapsed % instance.duration;
-                        progress = Math.min(1, Math.max(0, currentLoopPos / instance.duration));
-                    }
-                    progEl.value = progress * 100;
-                    // Update visual background of range slider
-                    progEl.style.background = `linear-gradient(to right, #b87333 ${progEl.value}%, var(--placeholder-bg) ${progEl.value}%)`;
-                }
-            });
+        if (!audioCtx) {
+            isProgressLoopRunning = false;
+            return;
         }
-        requestAnimationFrame(updateProgressBars);
+
+        const currentTime = audioCtx.currentTime;
+        let anyPlaying = false;
+
+        instruments.forEach(item => {
+            if (item.activeInstances.length === 0) return;
+
+            const instance = item.activeInstances[0];
+            if (!instance.isPaused) {
+                anyPlaying = true;
+            }
+
+            const progEl = document.getElementById(`prog-${item.id}`);
+
+            if (progEl && !item.isScrubbing) {
+                let progress = 0;
+                if (instance.isPaused) {
+                    progress = instance.pauseOffset / instance.duration;
+                } else {
+                    const elapsed = currentTime - instance.startTime;
+                    const currentLoopPos = elapsed % instance.duration;
+                    progress = Math.min(1, Math.max(0, currentLoopPos / instance.duration));
+                }
+                progEl.value = progress * 100;
+                // Update visual background of range slider
+                progEl.style.background = `linear-gradient(to right, #b87333 ${progEl.value}%, var(--placeholder-bg) ${progEl.value}%)`;
+            }
+        });
+
+        if (anyPlaying) {
+            requestAnimationFrame(updateProgressBars);
+        } else {
+            isProgressLoopRunning = false;
+        }
     }
-    updateProgressBars();
+
+    function startProgressLoop() {
+        if (!isProgressLoopRunning) {
+            isProgressLoopRunning = true;
+            requestAnimationFrame(updateProgressBars);
+        }
+    }
 
     // 3. Render Grid
     instruments.forEach((item) => {
@@ -554,7 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = document.createElement("img");
         if (item.image) {
             img.src = item.image;
-            img.loading = "lazy"; // Defer off-screen images
+            // Eagerly load optimized smaller images to avoid layout shift and splash screen deadlock
         } else {
             // Placeholder tiny transparent pixel if no img
             img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -586,7 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Start tracking image loads for the splash screen
-    const allTileImages = Array.from(document.querySelectorAll(".instrument-tile img[loading='lazy']"));
+    const allTileImages = Array.from(document.querySelectorAll(".instrument-tile img")).filter(img => img.src && !img.src.startsWith("data:"));
     trackImageLoading(allTileImages);
 
     // 4. Spectrogram Animation Loop
@@ -598,9 +632,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const lineInertia = Array(numLines).fill(0);
 
     function animate() {
+        // Clear to transparent at the start of frame
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         let overallEnergy = 0;
 
@@ -672,39 +705,33 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.lineJoin = "round";
             ctx.lineCap = "round";
 
-            // To optimize heavily, we skip the shadowBlur API entirely.
-            // Fake a glow by drawing a transparent fat line underneath, then the core outline on top.
-            const isMobile = window.innerWidth <= 768;
-
+            // To optimize heavily, we draw with solid colors and apply a single mask at the end.
             if (amplitude > 0.05) {
-                const glowGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-                glowGrad.addColorStop(0, `hsla(${h}, 40%, 48%, 0.11)`);
-                if (isMobile) {
-                    glowGrad.addColorStop(1, `hsla(${h}, 40%, 48%, 0.11)`);
-                } else {
-                    glowGrad.addColorStop(0.9, `hsla(${h}, 40%, 48%, 0.11)`);
-                    glowGrad.addColorStop(1, `hsla(${h}, 40%, 48%, 0)`);
-                }
-
                 ctx.lineWidth = baseLineWidth + (amplitude * 20);
-                ctx.strokeStyle = glowGrad;
+                ctx.strokeStyle = `hsla(${h}, 40%, 48%, 0.11)`;
                 ctx.stroke();
             }
 
             // Core visible line
-            const coreGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-            coreGrad.addColorStop(0, `hsla(${h}, ${s}%, ${l}%, ${a})`);
-            if (isMobile) {
-                coreGrad.addColorStop(1, `hsla(${h}, ${s}%, ${l}%, ${a})`);
-            } else {
-                coreGrad.addColorStop(0.9, `hsla(${h}, ${s}%, ${l}%, ${a})`);
-                coreGrad.addColorStop(1, `hsla(${h}, ${s}%, ${l}%, 0)`);
-            }
-
             ctx.lineWidth = baseLineWidth;
-            ctx.strokeStyle = coreGrad;
+            ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${a})`;
             ctx.stroke();
         }
+
+        // Apply global horizontal fade-out mask to all lines at once
+        if (maskGrad) {
+            ctx.globalCompositeOperation = "destination-in";
+            ctx.fillStyle = maskGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Draw solid white background behind the lines
+        ctx.globalCompositeOperation = "destination-over";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Reset to default source-over blend mode
+        ctx.globalCompositeOperation = "source-over";
 
         // Check if any lines still have inertia - if not and no audio, we can rest
         const stillMoving = lineInertia.some(v => v > 0.001);
