@@ -660,13 +660,48 @@ document.addEventListener("DOMContentLoaded", () => {
     let time = 0;
     let animating = false;
 
-    // We will keep a history (or inertia) for each line to give it elastic physics
-    const numLines = 65;
-    const lineInertia = Array(numLines).fill(0);
+    // Adaptive Performance Quality Settings (Defaults to High-Quality)
+    let numLines = 65;
+    let lineSegments = 40;
+    let edgeTaperCache = [];
 
-    // Precompute edgeTaper values to optimize visualizer math for 20x CPU slowdown
-    const lineSegments = 40;
-    const edgeTaperCache = Array.from({ length: lineSegments + 1 }, (_, j) => Math.sin((j / lineSegments) * Math.PI));
+    function runPerformanceBenchmark() {
+        const start = performance.now();
+        
+        // Run a small math loop to measure CPU performance on the fly
+        let sum = 0;
+        for (let i = 0; i < 8000; i++) {
+            sum += Math.sin(i * 0.1) * Math.cos(i * 0.2);
+        }
+        
+        const duration = performance.now() - start;
+        console.log(`[Performance] Benchmark finished in ${duration.toFixed(2)}ms.`);
+
+        // Static hardware indicators
+        const lowMemory = navigator.deviceMemory && navigator.deviceMemory < 4;
+        const lowCPU = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+
+        // If benchmark math takes > 8ms, or low-end device RAM/cores are detected,
+        // trigger Low-Power Mode to prevent UI rendering lag.
+        if (duration > 8.0 || lowMemory || lowCPU) {
+            numLines = 40;
+            lineSegments = 30;
+            console.log(`[Performance] Low-power mode activated: ${numLines} lines, ${lineSegments} segments.`);
+        } else {
+            numLines = 65;
+            lineSegments = 40;
+            console.log(`[Performance] High-performance mode activated: ${numLines} lines, ${lineSegments} segments.`);
+        }
+
+        // Cache the visualizer edge taper math once
+        edgeTaperCache = Array.from({ length: lineSegments + 1 }, (_, j) => Math.sin((j / lineSegments) * Math.PI));
+    }
+    
+    // Execute benchmark on script load
+    runPerformanceBenchmark();
+
+    // Setup line history with the dynamically determined line count
+    const lineInertia = Array(numLines).fill(0);
 
     function animate() {
         // Clear to transparent at the start of frame
