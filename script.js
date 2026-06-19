@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const gridContainer = document.getElementById("instrument-grid");
     const canvas = document.getElementById("spectrogram-canvas");
     const ctx = canvas.getContext("2d");
     const currentlyPlayingInfo = document.getElementById("currently-playing-info");
@@ -105,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const instruments = [
         // GONGS
         { id: 'gong-verdigris', category: 'gongs', image: "Instruments/GONGS/verdigris/verdigris_transp.webp", sound: "Instruments/GONGS/verdigris/1 Verdigris.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Verdigris", material: "Unknown", year: "Unknown" },
-        { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.webp", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "", material: "Copper and bronze", year: "Made in the 1970s", size: "120 1/2 × 34 in. (306.1 × 86.4 cm)", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=3856" },
+        { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.webp", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Cat Gong", material: "Copper and bronze", year: "Made in the 1970s", size: "120 1/2 × 34 in. (306.1 × 86.4 cm)", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=3856" },
         { id: 'gong-blue', category: 'gongs', image: "Instruments/GONGS/blue/blue.webp", sound: "Instruments/GONGS/blue/blue.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Blue", material: "Unknown", year: "Unknown" },
         { id: 'gong-2plytall', category: 'gongs', image: "Instruments/GONGS/2 Ply Tall/2plytall.webp", sound: "Instruments/GONGS/2 Ply Tall/1 (1).ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Tall", material: "Unknown", year: "Unknown" },
         { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.webp", sound: "Instruments/GONGS/2 ply square/2plysquare.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Square", material: "Unknown", year: "Unknown" },
@@ -116,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 'bars-1', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/Screenshot 2026-03-17 at 5.14.01 PM.webp", sound: "Instruments/SINGING BARS/singingbars1/1m16s_swinging bars_gong_drone_rods_LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 1", material: "Unknown", year: "Unknown" },
         { id: 'bars-2', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars2/SonambientInventory 010_transparent.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars2/2m15s_swinging bars LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 2", material: "Unknown", year: "Unknown" },
         { id: 'bars-3', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars3/SonambientInventory 011_transparent.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars3/45s_swinging bars LP opening edit.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 3", material: "Unknown", year: "Unknown" },
+        { id: 'bars-4', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars4/sb01.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars4/sosb11.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 4", material: "Unknown", year: "Unknown" },
 
         // TONALS - TOPS
         { id: 'tops-1', category: 'tonals-tops', image: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531-transparent.webp", sound: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0531", material: "Unknown", year: "Unknown" },
@@ -244,11 +244,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+        function updateProgressFill(progEl) {
+            if (!progEl) return;
+            const val = progEl.value;
+            progEl.style.background = `linear-gradient(to right, #b87333 ${val}%, var(--placeholder-bg) ${val}%)`;
+        }
+
         currentlyPlayingInfo.addEventListener("input", (e) => {
             if (e.target.classList.contains('scrubber')) {
                 const id = e.target.dataset.id;
                 const item = instruments.find(i => i.id === id);
                 if (item) item.isScrubbing = true;
+                updateProgressFill(e.target);
             }
         });
 
@@ -268,6 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         playAtOffset(item, tile, newOffset);
                     } else {
                         instance.pauseOffset = newOffset;
+                        updateProgressFill(e.target);
                     }
                 }
             }
@@ -443,6 +451,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         item.isLoading = false;
+        
+        if (!buffer) {
+            if (tileElement) {
+                tileElement.classList.remove("loading");
+                tileElement.classList.remove("active");
+            }
+            const anyActive = instruments.some(i => i.activeInstances.length > 0 || i.isLoading);
+            if (!anyActive) collapseVisualizer();
+            return;
+        }
+
         if (tileElement) {
             tileElement.classList.remove("loading");
             tileElement.classList.add("active");
@@ -542,7 +561,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Reveal visualizer & start animation immediately — don't wait for buffer load
         const topRow = document.querySelector(".top-row");
-        if (topRow) topRow.classList.add("visible");
+        if (topRow) {
+            const isFirstPlay = !topRow.classList.contains("visible");
+            topRow.classList.add("visible");
+            
+            if (isFirstPlay) {
+                // Disable scroll anchoring temporarily so it doesn't fight the smooth scroll
+                document.body.style.overflowAnchor = "none";
+                
+                setTimeout(() => {
+                    const header = document.querySelector(".site-header");
+                    let targetY = topRow.getBoundingClientRect().top + window.scrollY - 20;
+                    if (header) {
+                        targetY = header.getBoundingClientRect().bottom + window.scrollY;
+                    }
+                    
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                    
+                    // Re-enable scroll anchoring after the expansion transition finishes
+                    setTimeout(() => {
+                        document.body.style.overflowAnchor = "";
+                    }, 1800);
+                }, 50);
+            }
+        }
         startAnimate();
 
         // Mark as loading and play
@@ -583,8 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     progress = Math.min(1, Math.max(0, currentLoopPos / instance.duration));
                 }
                 progEl.value = progress * 100;
-                // Update visual background of range slider
-                progEl.style.background = `linear-gradient(to right, #b87333 ${progEl.value}%, var(--placeholder-bg) ${progEl.value}%)`;
+                updateProgressFill(progEl);
             }
         });
 
@@ -738,6 +779,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             lineInertia[i] += (targetAmplitude - lineInertia[i]) * 0.1;
             const amplitude = lineInertia[i];
+            const breathingOffset = Math.sin(time + (i * 0.2)) * 1.5;
 
             ctx.beginPath();
 
@@ -754,7 +796,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     y -= (ripple + detailRipple) * edgeTaper;
                 }
 
-                y += Math.sin(time + (i * 0.2) + (j * 0.1)) * 1.5;
+                y += breathingOffset;
 
                 if (j === 0) {
                     ctx.moveTo(x, y);
