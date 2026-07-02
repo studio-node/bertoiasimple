@@ -494,10 +494,7 @@ body {
     width: 100%;
 }
 
-#grid-singing-bars {
-    display: flex;
-    justify-content: center;
-}
+
 
 /* Pre-allocate container heights removed for compact packing */
 

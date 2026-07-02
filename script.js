@@ -112,6 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 'gong-gravegong', category: 'gongs', image: "gravegongfooter.jpg", sound: "Instruments/GONGS/gravegong/3s.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Grave Gong", material: "Unknown", year: "Unknown" },
 
         // SINGING BARS
+        { id: 'bars-1', category: 'singing-bars', image: "signignbar1.webp", sound: "", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bar 1", material: "Unknown", year: "Unknown" },
+        { id: 'bars-2', category: 'singing-bars', image: "singingbar2.webp", sound: "singingbar2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bar 2", material: "Unknown", year: "Unknown" },
+        { id: 'bars-3', category: 'singing-bars', image: "singingbar3.webp", sound: "", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bar 3", material: "Unknown", year: "Unknown" },
         { id: 'bars-4', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars4/sb01.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars4/sosb11.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 4", material: "Unknown", year: "Unknown" },
 
         // COMBINATIONS
@@ -359,6 +362,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <img src="${item.image || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'}" alt="${item.name}">
                     <div class="info-details">
                         ${nameStr}
+                        ${!item.sound ? `<div style="font-size: 13px; color: #888; font-style: italic; margin: 10px 0;">Audio coming soon...</div>` : `
                         <input type="range" id="prog-${item.id}" class="mini-progress scrubber" min="0" max="100" value="0" step="0.1" data-id="${item.id}">
                         <div class="playing-controls">
                             <button class="control-btn loop-btn ${item.isLooping ? 'active' : ''}" data-id="${item.id}" title="Toggle Loop">
@@ -376,6 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <button class="control-btn vol-up-btn" data-id="${item.id}" title="Volume Up" style="font-size:18px; font-weight:600; line-height:1; margin-left:2px; padding:0 4px;">+</button>
                             </div>
                         </div>
+                        `}
                         ${materialStr}
                         ${sizeStr}
                         ${yearStr}
@@ -533,6 +538,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handles both starting and stopping sounds (toggle)
     function handleTileClick(item, tileElement) {
+        if (!item.sound) {
+            if (item.activeInstances.length > 0) {
+                item.activeInstances = [];
+                tileElement.classList.remove("active");
+                renderCurrentlyPlaying();
+                if (!instruments.some(i => i.activeInstances.length > 0 || i.isLoading)) collapseVisualizer();
+            } else {
+                item.activeInstances = [{ isDummy: true }];
+                tileElement.classList.add("active");
+                renderCurrentlyPlaying();
+                
+                const topRow = document.querySelector(".top-row");
+                if (topRow && !topRow.classList.contains("visible")) {
+                    topRow.classList.add("visible");
+                    setTimeout(() => {
+                        const header = document.querySelector(".site-header");
+                        let targetY = topRow.getBoundingClientRect().top + window.scrollY - 20;
+                        if (header) targetY = header.getBoundingClientRect().bottom + window.scrollY;
+                        window.scrollTo({ top: targetY, behavior: 'smooth' });
+                    }, 50);
+                }
+            }
+            return;
+        }
+
         if (!audioCtx) initAudio();
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
