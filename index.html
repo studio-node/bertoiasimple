@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=1.9">
 </head>
 
 <body>
@@ -39,10 +39,9 @@
                     <a href="coming-soon.html">Tape Archive</a>
                     <a href="sonambient-barn.html">Sonambient Barn</a>
                     <a href="https://catalogue.harrybertoia.org/catalogue/index.php?section=Sonambient" target="_blank"
-                        rel="noopener noreferrer">Sculptures</a>
+                         rel="noopener noreferrer">Sculptures</a>
                     <a href="materials.html">Materials</a>
-                    <a href="https://catalogue.harrybertoia.org/catalogue/index.php?section=Two-Dimensional"
-                        target="_blank" rel="noopener noreferrer">Monotypes</a>
+                    <a href="monotypes.html">Monotypes</a>
                     <a href="https://importantrecords.com/products/harry-bertoia-download-complete-sonambient-collection"
                         target="_blank" rel="noopener noreferrer">Original Releases</a>
                 </div>
@@ -119,6 +118,14 @@
             </div>
         </div>
 
+        <div class="layout-toggle-container">
+            <label class="switch">
+                <input type="checkbox" id="layout-toggle-switch">
+                <span class="slider round"></span>
+            </label>
+            <span class="layout-toggle-label">Row Layout</span>
+        </div>
+
         <div class="bottom-row">
             <main id="instrument-categories">
                 <section class="category-section">
@@ -136,11 +143,19 @@
                 <section class="category-section" id="section-singing-bars">
                     <div class="grid-container" id="grid-singing-bars"></div>
                 </section>
+
+                <section class="category-section" id="section-combinations">
+                    <div class="grid-container" id="grid-combinations"></div>
+                </section>
             </main>
+            <div id="grid-all-rows" style="display: none; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 30px;"></div>
+            <section id="grave-gong-section">
+                <div id="grave-gong-footer"></div>
+            </section>
         </div>
     </div>
 
-    <script src="script.js?v=1.1"></script>
+    <script src="script.js?v=1.10"></script>
 </body>
 
 </html>

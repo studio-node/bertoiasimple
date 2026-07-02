@@ -296,16 +296,18 @@ body {
 }
 
 .inventory-title {
-    font-size: 20px;
+    font-size: clamp(12px, 1.5vw, 20px);
     font-weight: 900;
+    text-align: center;
 }
 
 #instrument-categories {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 384px);
-    gap: 60px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: clamp(5px, 2vw, 60px);
     align-items: flex-start;
     justify-content: center;
+    width: 100%;
 }
 
 /* Global Navbar */
@@ -474,16 +476,27 @@ body {
 
 .category-section {
     margin-bottom: 30px;
-    /* Reduced further */
+    width: 100%;
+    max-width: 384px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 20px;
-    row-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 90px), 1fr));
+    column-gap: clamp(5px, 1vw, 20px);
+    row-gap: clamp(5px, 1vw, 20px);
     margin-top: 15px;
-    width: 384px;
+    width: 100%;
+}
+
+#grid-singing-bars {
+    display: flex;
+    justify-content: center;
 }
 
 /* Pre-allocate container heights removed for compact packing */
@@ -514,6 +527,20 @@ body {
     transform: translateZ(0);
     /* Hardware accel for smooth transition */
 }
+
+#grid-tonals-rods,
+#grid-tonals-tops,
+.layout-row {
+    align-items: flex-end;
+}
+
+.tile-wrapper[data-category="tonals-rods"] .instrument-tile,
+.tile-wrapper[data-category="tonals-tops"] .instrument-tile {
+    align-items: flex-end;
+    min-height: 200px;
+}
+
+
 
 .mini-progress {
     width: 100%;
@@ -585,7 +612,7 @@ body {
 }
 
 .instrument-tile img {
-    width: auto;
+    width: 100%;
     max-width: 90px;
     height: auto;
     max-height: 200px;
@@ -636,12 +663,6 @@ body {
         height: 600px;
     }
 
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        column-gap: 20px;
-        width: 384px;
-    }
 }
 
 @media (max-width: 768px) {
@@ -727,20 +748,6 @@ body {
         /* Align text with content */
     }
 
-    .grid-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        width: 100%;
-    }
-
-    #instrument-categories {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
-    }
 }
 
 /* Text Page Styles (History, Sonambient Barn, etc) */
@@ -787,5 +794,135 @@ body {
     100% {
         opacity: 0.4;
         transform: scale(0.98);
+    }
+}
+
+/* Grave Gong Footer Section */
+#grave-gong-section {
+    margin-top: 20px;
+    padding-top: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(100% + 120px);
+    margin-left: -60px;
+    margin-bottom: -40px;
+}
+
+.grave-gong-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+#grave-gong-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#grave-gong-footer .tile-wrapper {
+    margin-bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#grave-gong-footer .instrument-tile {
+    max-height: none;
+    height: auto;
+    width: 100%;
+    max-width: none;
+}
+
+#grave-gong-footer .instrument-tile img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: none;
+    display: block;
+    object-fit: cover;
+    padding: 0;
+}
+
+/* Layout Toggle */
+.layout-toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+.layout-toggle-label {
+    font-size: 16px;
+    font-weight: 500;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: #b87333;
+}
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+.slider.round {
+    border-radius: 24px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Dynamic Row Layout */
+.layout-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: clamp(5px, 1.5vw, 20px);
+    width: 100%;
+}
+.layout-row .tile-wrapper {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 180px;
+}
+@media (max-width: 768px) {
+    .layout-row .tile-wrapper {
+        max-width: 140px;
     }
 }
