@@ -103,41 +103,46 @@ document.addEventListener("DOMContentLoaded", () => {
     // Instruments Configuration
     const instruments = [
         // GONGS
-        { id: 'gong-verdigris', category: 'gongs', image: "Instruments/GONGS/verdigris/verdigris_transp.webp", sound: "Instruments/GONGS/verdigris/1 Verdigris.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Verdigris", material: "Unknown", year: "Unknown" },
+        { id: 'gong-verdigris', category: 'gongs', image: "Instruments/GONGS/verdigris/verdigris_transp.webp", sound: "Instruments/GONGS/verdigris/1 Verdigris.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Single Ply", material: "Bronze", year: "Made in the 1970s", size: "48 × .125 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=339" },
         { id: 'gong-catgong', category: 'gongs', image: "Instruments/GONGS/catgong/catgong.webp", sound: "Instruments/GONGS/catgong/1m15s_Cat_Gong_edit2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Cat Gong", material: "Copper and bronze", year: "Made in the 1970s", size: "120 1/2 × 34 in. (306.1 × 86.4 cm)", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=3856" },
         // { id: 'gong-blue', category: 'gongs', image: "Instruments/GONGS/blue/blue.webp", sound: "Instruments/GONGS/blue/blue.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Blue", material: "Unknown", year: "Unknown" },
-        { id: 'gong-2plytall', category: 'gongs', image: "Instruments/GONGS/2 Ply Tall/2plytall.webp", sound: "Instruments/GONGS/2 Ply Tall/1 (1).ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Tall", material: "Unknown", year: "Unknown" },
-        { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.webp", sound: "Instruments/GONGS/2 ply square/2plysquare.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 Ply Square", material: "Unknown", year: "Unknown" },
+        { id: 'gong-2plytall', category: 'gongs', image: "Instruments/GONGS/2 Ply Tall/2plytall.webp", sound: "Instruments/GONGS/2 Ply Tall/1 (1).ogg", buffer: null, activeInstances: [], isLooping: false, name: "Double Walled", material: "Silicon bronze", year: "Made in the 1970s", size: "72 × .5 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=217" },
+        { id: 'gong-2plysquare', category: 'gongs', image: "Instruments/GONGS/2 ply square/2plysquare.webp", sound: "Instruments/GONGS/2 ply square/2plysquare.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Square", material: "Silicon bronze", year: "Made in the 1970s", size: "48 × 48 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=187" },
         // { id: 'gong-round', category: 'gongs', image: "Instruments/GONGS/round gong by door/HUB_1151_GONG_TRANSP.webp", sound: "Instruments/GONGS/round gong by door/1.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Round Gong", material: "Unknown", year: "Unknown" },
-        { id: 'gong-gravegong', category: 'gongs', image: "gravegongfooter.jpg", sound: "Instruments/GONGS/gravegong/3s.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Grave Gong", material: "Unknown", year: "Unknown" },
+        { id: 'gong-gravegong', category: 'gongs', image: "gravegongfooter.jpg", sound: "Instruments/GONGS/gravegong/3s.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Grave Gong", material: "Bronze", year: "Made in 1975", size: "120 × 4 in.", link: "https://harrybertoia.org/gongs/" },
 
         // SINGING BARS
-        { id: 'bars-1', category: 'singing-bars', image: "signignbar1.webp", sound: "", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bar 1", material: "Unknown", year: "Unknown" },
-        { id: 'bars-2', category: 'singing-bars', image: "singingbar2.webp", sound: "singingbar2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bar 2", material: "Unknown", year: "Unknown" },
-        { id: 'bars-3', category: 'singing-bars', image: "singingbar3.webp", sound: "", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bar 3", material: "Unknown", year: "Unknown" },
-        { id: 'bars-4', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars4/sb01.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars4/sosb11.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Singing Bars 4", material: "Unknown", year: "Unknown" },
+        { id: 'bars-1', category: 'singing-bars', image: "signignbar1.webp", sound: "", buffer: null, activeInstances: [], isLooping: false, name: "Short Thick", material: "Beryllium copper", year: "Made in the 1970s", size: "8 × 7/8 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=333" },
+        { id: 'bars-2', category: 'singing-bars', image: "singingbar2.webp", sound: "singingbar2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Short Thicker", material: "Beryllium copper", year: "Made in the 1970s", size: "8.75 × 1.125 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=334" },
+        { id: 'bars-3', category: 'singing-bars', image: "singingbar3.webp", sound: "", buffer: null, activeInstances: [], isLooping: false, name: "Long Bars", material: "Beryllium copper", year: "Made in the 1970s", size: "13.5 × .75 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=336" },
+        { id: 'bars-4', category: 'singing-bars', image: "Instruments/SINGING BARS/singingbars1/singingbars4/sb01.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars4/sosb11.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Skinny Bars", material: "Beryllium copper", year: "Made in the 1970s", size: "15 × .5 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=2714" },
 
         // COMBINATIONS
-        { id: 'combo-1', category: 'combinations', image: "Combination1.webp", sound: "Instruments/SINGING BARS/singingbars1/1m16s_swinging bars_gong_drone_rods_LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Combination 1", material: "Unknown", year: "Unknown" },
-        { id: 'combo-2', category: 'combinations', image: "combo2.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars3/45s_swinging bars LP opening edit.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Combination 2", material: "Unknown", year: "Unknown" },
+        { id: 'combo-1', category: 'combinations', image: "Combination1.webp", sound: "Instruments/SINGING BARS/singingbars1/1m16s_swinging bars_gong_drone_rods_LP.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Gong & Bars", material: "Copper and bronze", year: "Made in the 1970s", size: "Varied" },
+        { id: 'combo-2', category: 'combinations', image: "combo2.webp", sound: "Instruments/SINGING BARS/singingbars1/singingbars3/45s_swinging bars LP opening edit.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Gong & Bars 2", material: "Copper and bronze", year: "Made in the 1970s", size: "Varied" },
 
         // TONALS - TOPS
-        { id: 'tops-2', category: 'tonals-tops', image: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729_transparent.webp", sound: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729.ogg", buffer: null, activeInstances: [], isLooping: false, name: "6 HUB 0729", material: "Unknown", year: "Unknown" },
-        { id: 'tops-1', category: 'tonals-tops', image: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531-transparent.webp", sound: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0531", material: "Unknown", year: "Unknown" },
-        { id: 'tops-3', category: 'tonals-tops', image: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949_transparent.webp", sound: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949.ogg", buffer: null, activeInstances: [], isLooping: false, name: "7 HUB 0949", material: "Unknown", year: "Unknown" },
-        { id: 'tops-4', category: 'tonals-tops', image: "Instruments/TONALS/tops/9 HUB_696/HUB_0696_transparent.webp", sound: "Instruments/TONALS/tops/9 HUB_696/c 20s_thick tops_one hit_knocking decay_9.ogg", buffer: null, activeInstances: [], isLooping: false, name: "9 HUB 0696", material: "Unknown", year: "Unknown" },
-        { id: 'tops-5', category: 'tonals-tops', image: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0960_transparent.webp", sound: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0360.ogg", buffer: null, activeInstances: [], isLooping: false, name: "3 HUB 0960", material: "Unknown", year: "Unknown" },
-        { id: 'tops-6', category: 'tonals-tops', image: "Instruments/TONALS/tops/8 HUB_584/a HUB_0584_transparent.webp", sound: "Instruments/TONALS/tops/8 HUB_584/a 1m_thin tops  shimmering_UH_IB_1m.ogg", buffer: null, activeInstances: [], isLooping: false, name: "8 HUB 0584", material: "Unknown", year: "Unknown" },
-        { id: 'tops-7', category: 'tonals-tops', image: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749_transparent.webp", sound: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749.ogg", buffer: null, activeInstances: [], isLooping: false, name: "4 HUB 0749", material: "Unknown", year: "Unknown" },
+        { id: 'tops-2', category: 'tonals-tops', image: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729_transparent.webp", sound: "Instruments/TONALS/tops/6 HUB_729/6 HUB_0729.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Uneven Tops", material: "Inconel and monel", year: "Made in the 1970s", size: "63.75 × 12 × 12 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=330" },
+        { id: 'tops-1', category: 'tonals-tops', image: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531-transparent.webp", sound: "Instruments/TONALS/tops/1 HUB_0531/1 HUB_0531.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Mushroom Tops", material: "Beryllium copper", year: "Made in the 1970s", size: "39.5 × 9 × 9 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=221" },
+        { id: 'tops-3', category: 'tonals-tops', image: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949_transparent.webp", sound: "Instruments/TONALS/tops/7 HUB_949/7 HUB_0949.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Two Rows", material: "Beryllium copper", year: "Made in the 1970s", size: "65.25 × 16 × 8 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=307" },
+        { id: 'tops-4', category: 'tonals-tops', image: "Instruments/TONALS/tops/9 HUB_696/HUB_0696_transparent.webp", sound: "Instruments/TONALS/tops/9 HUB_696/c 20s_thick tops_one hit_knocking decay_9.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Cylinders", material: "Beryllium copper", year: "Made in the 1970s", size: "60 × 12 × 12 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=300" },
+        { id: 'tops-5', category: 'tonals-tops', image: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0960_transparent.webp", sound: "Instruments/TONALS/tops/3 HUB_960/3 HUB_0360.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Heavy Duty", material: "Bronze and beryllium copper", year: "Made c. 1975", size: "30.75 × 12 × 12 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=222" },
+        { id: 'tops-6', category: 'tonals-tops', image: "Instruments/TONALS/tops/8 HUB_584/a HUB_0584_transparent.webp", sound: "Instruments/TONALS/tops/8 HUB_584/a 1m_thin tops  shimmering_UH_IB_1m.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Cattails", material: "Inconel", year: "Made in the 1970s", size: "48 × 12 × 12 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=326" },
+        { id: 'tops-7', category: 'tonals-tops', image: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749_transparent.webp", sound: "Instruments/TONALS/tops/4 HUB_749/4 HUB_0749.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Tall Cattails", material: "Beryllium copper", year: "Made in the 1970s", size: "54.5 × 11 × 11 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=325" },
 
         // TONALS - RODS
-        { id: 'rods-2', category: 'tonals-rods', image: "Instruments/TONALS/rods/3 HUB_724/3 HUB_0724_transparent.webp", sound: "Instruments/TONALS/rods/3 HUB_724/3_HUB_0724.ogg", buffer: null, activeInstances: [], isLooping: false, name: "3 HUB 0724", material: "Unknown", year: "Unknown" },
-        { id: 'rods-1', category: 'tonals-rods', image: "Instruments/TONALS/rods/4 HUB_514/4 HUB_0514_transparent.webp", sound: "Instruments/TONALS/rods/4 HUB_514/4_HUB_0514.ogg", buffer: null, activeInstances: [], isLooping: false, name: "4 HUB 0514", material: "Unknown", year: "Unknown" },
-        { id: 'rods-3', category: 'tonals-rods', image: "Instruments/TONALS/rods/1 HUB_399/1 HUB_0399_transparent.webp", sound: "Instruments/TONALS/rods/1 HUB_399/1_HUB_0399.ogg", buffer: null, activeInstances: [], isLooping: false, name: "1 HUB 0399", material: "Unknown", year: "Unknown" },
-        { id: 'rods-4', category: 'tonals-rods', image: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521_transparent.webp", sound: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521.ogg", buffer: null, activeInstances: [], isLooping: false, name: "10 HUB 0521", material: "Unknown", year: "Unknown" },
-        { id: 'rods-5', category: 'tonals-rods', image: "Instruments/TONALS/rods/5 HUB_663/5 HUB_0663_transparent.webp", sound: "Instruments/TONALS/rods/5 HUB_663/5_HUB_0663.ogg", buffer: null, activeInstances: [], isLooping: false, name: "5 HUB 0663", material: "Unknown", year: "Unknown" },
-        { id: 'rods-6', category: 'tonals-rods', image: "Instruments/TONALS/rods/2A HUB_854/2 HUB_0854_transparent.webp", sound: "Instruments/TONALS/rods/2A HUB_854/2A_HUB_0854.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2A HUB 0854", material: "Unknown", year: "Unknown" },
-        // { id: 'rods-7', category: 'tonals-rods', image: "Instruments/TONALS/rods/2 HUB_0663/2 HUB_0663_transparent.webp", sound: "Instruments/TONALS/rods/2 HUB_0663/2 vidsource2.ogg", buffer: null, activeInstances: [], isLooping: false, name: "2 HUB 0663", material: "Unknown", year: "Unknown" }
+        { id: 'rods-2', category: 'tonals-rods', image: "Instruments/TONALS/rods/3 HUB_724/3 HUB_0724_transparent.webp", sound: "Instruments/TONALS/rods/3 HUB_724/3_HUB_0724.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Nickel Rods", material: "Nickel alloy", year: "Made in the 1970s", size: "62.25 × 12 × 12 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=192" },
+        { id: 'rods-1', category: 'tonals-rods', image: "Instruments/TONALS/rods/4 HUB_514/4 HUB_0514_transparent.webp", sound: "Instruments/TONALS/rods/4 HUB_514/4_HUB_0514.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Reed Rods", material: "Bronze", year: "Made in the 1970s", size: "30.5 × 8 × 8 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=182" },
+        { id: 'rods-3', category: 'tonals-rods', image: "Instruments/TONALS/rods/1 HUB_399/1 HUB_0399_transparent.webp", sound: "Instruments/TONALS/rods/1 HUB_399/1_HUB_0399.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Tall Tonal", material: "Monel", year: "Made c. 1975", size: "103 × 14 × 14 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=195" },
+        { id: 'rods-4', category: 'tonals-rods', image: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521_transparent.webp", sound: "Instruments/TONALS/rods/10 HUB_521/10 HUB_0521.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Baby", material: "Bronze", year: "Made c. 1970", size: "25 × 14 × 6 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=183" },
+        { id: 'rods-5', category: 'tonals-rods', image: "Instruments/TONALS/rods/5 HUB_663/5 HUB_0663_transparent.webp", sound: "Instruments/TONALS/rods/5 HUB_663/5_HUB_0663.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Simple Square", material: "Beryllium copper", year: "Made in the 1970s", size: "61 × 10 × 10 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=193" },
+        { id: 'rods-6', category: 'tonals-rods', image: "Instruments/TONALS/rods/2A HUB_854/2 HUB_0854_transparent.webp", sound: "Instruments/TONALS/rods/2A HUB_854/2A_HUB_0854.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Big Square", material: "Beryllium copper", year: "Made in the 1970s", size: "72.5 × 13 × 13 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=184" },
+        // NEW ADDITIONS
+        { id: 'rods-tallboy', category: 'tonals-rods', image: "Instruments/TONALS/new_additions/15/so15finalimg.webp", sound: "Instruments/TONALS/new_additions/15/SOTO15.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Tall Boy", material: "Beryllium copper", year: "Made in the 1970s", size: "72.25 × 10.5 × 10.5 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=185" },
+        { id: 'rods-22rods', category: 'tonals-rods', image: "Instruments/TONALS/new_additions/37/so37finalimg.webp", sound: "Instruments/TONALS/new_additions/37/SOTO37.ogg", buffer: null, activeInstances: [], isLooping: false, name: "22 Rods", material: "Beryllium copper", year: "Made in the 1970s", size: "73.5 × 14 × 14 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=215" },
+        { id: 'tops-churchbells', category: 'tonals-tops', image: "Instruments/TONALS/new_additions/60/soto60finalimg.webp", sound: "Instruments/TONALS/new_additions/60/SOTO60.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Church Bells", material: "Beryllium copper", year: "Made in the 1970s", size: "52.125 × 12 × 12 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=273" },
+        { id: 'tops-thickcattails', category: 'tonals-tops', image: "Instruments/TONALS/new_additions/74/so74finalimg.webp", sound: "Instruments/TONALS/new_additions/74/SOTO74.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Thick Cattails", material: "Monel and beryllium copper", year: "Made in the 1970s", size: "70.5 × 14 × 14 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=289" },
+        { id: 'tops-doublerows', category: 'tonals-tops', image: "Instruments/TONALS/new_additions/82/so82finalimg.webp", sound: "Instruments/TONALS/new_additions/82/SOTO82.ogg", buffer: null, activeInstances: [], isLooping: false, name: "Double Rows", material: "Beryllium copper", year: "Made in the 1970s", size: "60.875 × 17 × 5 in.", link: "https://catalogue.harrybertoia.org/catalogue/entry.php?id=308" }
     ];
     if (currentlyPlayingInfo) {
         currentlyPlayingInfo.addEventListener("click", (e) => {
@@ -674,7 +679,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    const layoutToggleSwitch = document.getElementById('layout-toggle-switch');
     const instrumentCategoriesContainer = document.getElementById('instrument-categories');
     const gridAllRows = document.getElementById('grid-all-rows');
     const graveGongSection = document.getElementById('grave-gong-section');
@@ -798,22 +802,10 @@ document.addEventListener("DOMContentLoaded", () => {
         trackImageLoading(allTileImages);
     }
 
-    if (layoutToggleSwitch) {
-        layoutToggleSwitch.addEventListener('change', (e) => {
-            const mode = e.target.checked ? 'rows' : 'columns';
-            if (mode === 'rows') {
-                instrumentCategoriesContainer.style.display = 'none';
-                gridAllRows.style.display = 'flex';
-            } else {
-                instrumentCategoriesContainer.style.display = '';
-                gridAllRows.style.display = 'none';
-            }
-            renderInstruments(mode);
-        });
-    }
-
     // Initial render
-    renderInstruments('columns');
+    instrumentCategoriesContainer.style.display = 'none';
+    gridAllRows.style.display = 'flex';
+    renderInstruments('rows');
 
     // Start tracking image loads for the splash screen
     const allTileImages = Array.from(document.querySelectorAll(".instrument-tile img")).filter(img => img.src && !img.src.startsWith("data:"));
