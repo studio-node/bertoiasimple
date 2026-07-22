@@ -26,7 +26,7 @@ body {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: url('background.jpg') center/cover no-repeat;
+    background: url('assets/images/background.jpg') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -442,7 +442,7 @@ body {
 /* Global Header */
 .site-header {
     text-align: center;
-    background: url('smallerslice.webp') center/cover no-repeat;
+    background: url('assets/images/smallerslice.webp') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -531,12 +531,23 @@ body {
     align-items: flex-end;
 }
 
+#grid-gongs,
+#grid-singing-bars,
+#grid-combinations {
+    align-items: flex-start;
+}
+
 .tile-wrapper[data-category="tonals-rods"] .instrument-tile,
 .tile-wrapper[data-category="tonals-tops"] .instrument-tile {
     align-items: flex-end;
     min-height: 200px;
 }
 
+.tile-wrapper[data-category="gongs"] .instrument-tile,
+.tile-wrapper[data-category="singing-bars"] .instrument-tile,
+.tile-wrapper[data-category="combinations"] .instrument-tile {
+    align-items: flex-start;
+}
 
 
 .mini-progress {
@@ -617,6 +628,15 @@ body {
     opacity: 1;
     /* Fully colored by default */
     transition: transform 0.6s ease, opacity 0.4s ease, filter 0.4s ease;
+}
+
+.tile-wrapper[data-category="tonals-rods"] .instrument-tile img,
+.tile-wrapper[data-category="tonals-tops"] .instrument-tile img {
+    height: 170px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: bottom center;
 }
 
 .instrument-tile:not(.placeholder):hover {
