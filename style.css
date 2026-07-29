@@ -58,7 +58,10 @@ body.nav-menu-open {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 60px 80px;
+    padding: 50px 40px;
+    max-width: 90vw;
+    width: 460px;
+    box-sizing: border-box;
     gap: 0;
 }
 
@@ -80,6 +83,7 @@ body.nav-menu-open {
     margin-bottom: 20px;
     letter-spacing: -0.02em;
     line-height: 1.1;
+    text-wrap: balance;
 }
 
 .splash-description {
@@ -88,9 +92,10 @@ body.nav-menu-open {
     font-weight: 400;
     color: var(--text-color);
     opacity: 0.7;
-    line-height: 1.7;
+    line-height: 1.6;
     max-width: 380px;
     margin-bottom: 16px;
+    text-wrap: balance;
 }
 
 .splash-device-note {
@@ -102,6 +107,7 @@ body.nav-menu-open {
     font-style: italic;
     margin-bottom: 28px;
     letter-spacing: 0.01em;
+    text-wrap: balance;
 }
 
 .splash-status {
@@ -895,13 +901,49 @@ body.nav-menu-open {
         to { opacity: 1; transform: translateY(0); }
     }
 
+    .splash-content {
+        padding: 32px 20px;
+        width: 88vw;
+        max-width: 360px;
+    }
+
+    .splash-title {
+        font-size: 28px;
+        margin-bottom: 14px;
+    }
+
+    .splash-description {
+        font-size: 13.5px;
+        line-height: 1.5;
+    }
+
+    .splash-device-note {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
     .site-header {
         height: auto;
-        padding: 30px 20px;
+        padding: 24px 15px;
+        margin-bottom: 30px;
+    }
+
+    .site-header-content {
+        padding: 24px 16px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .site-header h1 {
-        font-size: 32px;
+        font-size: clamp(20px, 6vw, 28px);
+        white-space: nowrap;
+        margin-bottom: 10px;
+    }
+
+    .site-header p {
+        font-size: 15px;
+        text-wrap: balance;
     }
 
     .main-content-container {
@@ -915,26 +957,34 @@ body.nav-menu-open {
     .top-row {
         flex-direction: column;
         height: 0;
+        gap: 10px;
     }
 
     .top-row.visible {
-        height: auto;
-        min-height: 680px;
+        height: 560px;
+        opacity: 1;
+        margin-bottom: 25px;
     }
 
     .canvas-container {
         width: 100%;
-        height: 360px;
+        height: 220px;
+        flex: none;
         overflow: hidden;
     }
 
     #spectrogram-canvas {
-        height: 360px;
+        height: 220px;
+        width: 100%;
+        display: block;
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+        mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
     }
 
     .currently-playing-container {
-        padding: 15px 0 0 0;
+        padding: 10px 20px 0 20px;
         width: 100%;
+        flex: none;
     }
 
     #currently-playing-info {

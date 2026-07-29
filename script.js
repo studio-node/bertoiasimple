@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Dynamic canvas height calculation for desktop, mobile, and fullscreen modes
     const CANVAS_DESKTOP_HEIGHT = 540;
-    const CANVAS_MOBILE_HEIGHT = 360;
+    const CANVAS_MOBILE_HEIGHT = 220;
     let maskGrad = null;
 
     const fullscreenBtn = document.getElementById("fullscreen-btn");
@@ -398,7 +398,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        if (topRow) topRow.classList.add("visible");
+        if (topRow) {
+            topRow.classList.add("visible");
+            resizeCanvas();
+            startAnimate();
+        }
 
         currentlyPlayingInfo.innerHTML = playingInstruments.map(item => {
             const materialStr = item.material === 'Unknown' ? '' : `<p>${item.material}</p>`;
