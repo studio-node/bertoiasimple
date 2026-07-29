@@ -240,6 +240,12 @@ body.nav-menu-open {
     height: 100vh;
 }
 
+body.fullscreen-open {
+    overflow: hidden !important;
+    height: 100vh !important;
+    touch-action: none !important;
+}
+
 /* Pseudo-Fullscreen Fallback for Mobile / iOS Safari */
 .canvas-container.fullscreen-active {
     position: fixed !important;
@@ -249,11 +255,12 @@ body.nav-menu-open {
     bottom: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    z-index: 99999 !important;
+    z-index: 999999 !important;
     background-color: var(--bg-color) !important;
     margin: 0 !important;
     padding: 0 !important;
     border-radius: 0 !important;
+    touch-action: none !important;
 }
 
 .canvas-container.fullscreen-active #spectrogram-canvas {
@@ -266,7 +273,7 @@ body.nav-menu-open {
     position: fixed !important;
     bottom: 30px !important;
     right: 30px !important;
-    z-index: 100000 !important;
+    z-index: 1000000 !important;
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -285,6 +292,17 @@ body.nav-menu-open {
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 20px;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+.scroll-hint {
+    font-size: 13px;
+    font-weight: 500;
+    color: #b87333;
+    margin-left: 6px;
+    font-style: italic;
 }
 
 .view-more-blurb {
@@ -571,7 +589,7 @@ body.nav-menu-open {
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
-    margin-bottom: 0;
+    margin-bottom: 60px;
 }
 
 .site-header-content {

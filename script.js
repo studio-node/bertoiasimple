@@ -101,17 +101,26 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
+    const preventFullscreenTouch = (e) => {
+        if (e.target.closest('#fullscreen-btn')) return;
+        e.preventDefault();
+    };
+
     function toggleFullscreenState(isFullscreen) {
         if (!fullscreenBtn || !canvasContainer) return;
         const textSpan = fullscreenBtn.querySelector('.fullscreen-text');
         if (isFullscreen) {
             if (textSpan) textSpan.textContent = "Exit full screen";
             canvasContainer.classList.add("fullscreen-active");
+            document.body.classList.add("fullscreen-open");
             document.body.style.overflow = "hidden";
+            window.addEventListener("touchmove", preventFullscreenTouch, { passive: false });
         } else {
             if (textSpan) textSpan.textContent = "Go full screen";
             canvasContainer.classList.remove("fullscreen-active");
+            document.body.classList.remove("fullscreen-open");
             document.body.style.overflow = "";
+            window.removeEventListener("touchmove", preventFullscreenTouch);
         }
         resizeCanvas();
     }
@@ -419,6 +428,15 @@ document.addEventListener("DOMContentLoaded", () => {
             topRow.classList.add("visible");
             resizeCanvas();
             startAnimate();
+        }
+
+        const playingTitleEl = document.querySelector(".currently-playing-title");
+        if (playingTitleEl) {
+            if (playingInstruments.length > 1) {
+                playingTitleEl.innerHTML = `Currently playing (${playingInstruments.length}): <span class="scroll-hint">(scroll for more &darr;)</span>`;
+            } else {
+                playingTitleEl.textContent = "Currently playing:";
+            }
         }
 
         currentlyPlayingInfo.innerHTML = playingInstruments.map(item => {
