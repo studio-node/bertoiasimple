@@ -930,10 +930,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Speed of the organic "breathing" increases slightly with volume
         time += 0.01 + ((overallEnergy / 255) * 0.03);
 
-        const verticalPadding = 20; // Minimal padding so lines fill the canvas
+        const verticalPadding = Math.max(35, Math.floor(canvas.height * 0.08));
         const availableHeight = canvas.height - (verticalPadding * 2);
         const lineSpacing = availableHeight / numLines;
         const segmentWidth = canvas.width / lineSegments;
+
+        const maxWaveAmplitude = Math.min(30, verticalPadding * 0.65);
 
         for (let i = 0; i < numLines; i++) {
             // i=0 is lowest frequency (bottom of screen)
@@ -948,7 +950,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             lineInertia[i] += (targetAmplitude - lineInertia[i]) * 0.1;
             const amplitude = lineInertia[i];
-            const breathingOffset = Math.sin(time + (i * 0.2)) * 1.5;
+            const breathingOffset = Math.sin(time + (i * 0.2)) * 1.2;
 
             ctx.beginPath();
 
@@ -956,7 +958,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const x = j * segmentWidth;
                 let y = baseY;
 
-                const waveScale = amplitude * 40;
+                const waveScale = amplitude * maxWaveAmplitude;
                 if (waveScale > 0.1) {
                     const ripple = Math.sin((j * 0.2) - (time * 5) + (i * 0.1)) * waveScale;
                     const detailRipple = Math.cos((j * 0.5) - (time * 2)) * (waveScale * 0.3);
