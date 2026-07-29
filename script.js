@@ -40,15 +40,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // Canvas height is fixed in CSS at 600px — only width needs updating on resize.
-    const CANVAS_FINAL_HEIGHT = 540;
+    // Dynamic canvas height calculation for desktop, mobile, and fullscreen modes
+    const CANVAS_DESKTOP_HEIGHT = 540;
+    const CANVAS_MOBILE_HEIGHT = 360;
     let maskGrad = null;
+
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+    const canvasContainer = document.querySelector(".canvas-container");
+
+    const getTargetCanvasHeight = () => {
+        if (document.fullscreenElement || canvasContainer?.classList.contains("fullscreen-active")) {
+            return window.innerHeight;
+        }
+        if (window.innerWidth <= 768) {
+            return CANVAS_MOBILE_HEIGHT;
+        }
+        return CANVAS_DESKTOP_HEIGHT;
+    };
+
     const resizeCanvas = () => {
         if (!canvas) return;
         canvas.width = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
-        // Never touch canvas.height — it's fixed to prevent glitch during transitions
+        const targetHeight = getTargetCanvasHeight();
+        canvas.height = targetHeight;
         
-        // Cache the horizontal gradient mask to avoid creating gradients on every frame
         const isMobile = window.innerWidth <= 768;
         maskGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
         maskGrad.addColorStop(0, 'rgba(0, 0, 0, 1)');
@@ -59,37 +74,74 @@ document.addEventListener("DOMContentLoaded", () => {
             maskGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         }
     };
-    canvas.height = CANVAS_FINAL_HEIGHT;
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
+    function toggleFullscreenState(isFullscreen) {
+        if (!fullscreenBtn || !canvasContainer) return;
+        const textSpan = fullscreenBtn.querySelector('.fullscreen-text');
+        if (isFullscreen) {
+            if (textSpan) textSpan.textContent = "Exit full screen";
+            canvasContainer.classList.add("fullscreen-active");
+            document.body.style.overflow = "hidden";
+        } else {
+            if (textSpan) textSpan.textContent = "Go full screen";
+            canvasContainer.classList.remove("fullscreen-active");
+            document.body.style.overflow = "";
+        }
+        resizeCanvas();
+    }
 
-    const fullscreenBtn = document.getElementById("fullscreen-btn");
-    const canvasContainer = document.querySelector(".canvas-container");
     if (fullscreenBtn && canvasContainer) {
-        fullscreenBtn.addEventListener("click", () => {
-            if (!document.fullscreenElement) {
-                canvasContainer.requestFullscreen().catch(err => {
-                    console.error("Error enabling fullscreen:", err);
-                });
+        fullscreenBtn.addEventListener("click", async () => {
+            const isFallbackActive = canvasContainer.classList.contains("fullscreen-active");
+            
+            if (isFallbackActive || document.fullscreenElement) {
+                if (document.fullscreenElement && document.exitFullscreen) {
+                    try { await document.exitFullscreen(); } catch (e) {}
+                }
+                toggleFullscreenState(false);
+                return;
+            }
+
+            // Try native Fullscreen API first
+            if (canvasContainer.requestFullscreen) {
+                try {
+                    await canvasContainer.requestFullscreen();
+                    toggleFullscreenState(true);
+                } catch (err) {
+                    console.warn("Native requestFullscreen failed, enabling fallback fullscreen:", err);
+                    toggleFullscreenState(true);
+                }
+            } else if (canvasContainer.webkitRequestFullscreen) {
+                try {
+                    canvasContainer.webkitRequestFullscreen();
+                    toggleFullscreenState(true);
+                } catch (err) {
+                    toggleFullscreenState(true);
+                }
             } else {
-                document.exitFullscreen();
+                // Fallback for iOS Safari / restricted browsers
+                toggleFullscreenState(true);
             }
         });
 
         document.addEventListener("fullscreenchange", () => {
-            const textSpan = fullscreenBtn.querySelector('.fullscreen-text');
-            if (document.fullscreenElement) {
-                if (textSpan) textSpan.textContent = "Exit full screen";
-                // Increase drawing resolution to match the screen height so it doesn't stretch
-                canvas.height = window.innerHeight;
-                canvas.style.height = "100%";
-            } else {
-                if (textSpan) textSpan.textContent = "Go full screen";
-                canvas.height = CANVAS_FINAL_HEIGHT;
-                canvas.style.height = "";
+            const isNativeFull = !!document.fullscreenElement;
+            if (!isNativeFull && canvasContainer.classList.contains("fullscreen-active")) {
+                toggleFullscreenState(false);
+            } else if (isNativeFull) {
+                toggleFullscreenState(true);
             }
-            resizeCanvas();
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && canvasContainer.classList.contains("fullscreen-active")) {
+                if (document.fullscreenElement && document.exitFullscreen) {
+                    try { document.exitFullscreen(); } catch (err) {}
+                }
+                toggleFullscreenState(false);
+            }
         });
     }
 
