@@ -65,11 +65,28 @@ document.addEventListener("DOMContentLoaded", () => {
         return CANVAS_DESKTOP_HEIGHT;
     };
 
+    let numLines = 65;
+    let lineSegments = 40;
+    let edgeTaperCache = Array.from({ length: 41 }, (_, j) => Math.sin((j / 40) * Math.PI));
+    let lineInertia = Array(numLines).fill(0);
+
+    function updateLineCount() {
+        if (!canvas) return;
+        const targetHeight = canvas.height || 540;
+        const calculatedLines = Math.max(32, Math.floor(targetHeight / 8.3));
+        if (calculatedLines !== numLines || lineInertia.length !== numLines) {
+            numLines = calculatedLines;
+            lineInertia = Array(numLines).fill(0);
+        }
+    }
+
     const resizeCanvas = () => {
         if (!canvas) return;
         canvas.width = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
         const targetHeight = getTargetCanvasHeight();
         canvas.height = targetHeight;
+        
+        updateLineCount();
         
         const isMobile = window.innerWidth <= 768;
         maskGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
@@ -877,49 +894,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. Spectrogram Animation Loop
     let time = 0;
     let animating = false;
-
-    // Adaptive Performance Quality Settings (Defaults to High-Quality)
-    let numLines = 65;
-    let lineSegments = 40;
-    let edgeTaperCache = [];
-
-    function runPerformanceBenchmark() {
-        const start = performance.now();
-        
-        // Run a small math loop to measure CPU performance on the fly
-        let sum = 0;
-        for (let i = 0; i < 8000; i++) {
-            sum += Math.sin(i * 0.1) * Math.cos(i * 0.2);
-        }
-        
-        const duration = performance.now() - start;
-        console.log(`[Performance] Benchmark finished in ${duration.toFixed(2)}ms.`);
-
-        // Static hardware indicators
-        const lowMemory = navigator.deviceMemory && navigator.deviceMemory < 4;
-        const lowCPU = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
-
-        // If benchmark math takes > 8ms, or low-end device RAM/cores are detected,
-        // trigger Low-Power Mode to prevent UI rendering lag.
-        if (duration > 8.0 || lowMemory || lowCPU) {
-            numLines = 40;
-            lineSegments = 30;
-            console.log(`[Performance] Low-power mode activated: ${numLines} lines, ${lineSegments} segments.`);
-        } else {
-            numLines = 65;
-            lineSegments = 40;
-            console.log(`[Performance] High-performance mode activated: ${numLines} lines, ${lineSegments} segments.`);
-        }
-
-        // Cache the visualizer edge taper math once
-        edgeTaperCache = Array.from({ length: lineSegments + 1 }, (_, j) => Math.sin((j / lineSegments) * Math.PI));
-    }
-    
-    // Execute benchmark on script load
-    runPerformanceBenchmark();
-
-    // Setup line history with the dynamically determined line count
-    const lineInertia = Array(numLines).fill(0);
 
     function animate() {
         // Clear to transparent at the start of frame
