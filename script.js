@@ -9,11 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const splashEnter = document.getElementById("splash-enter");
 
     function dismissSplash() {
-        splashScreen.classList.add("hidden");
-        setTimeout(() => splashScreen.remove(), 700);
+        document.body.classList.remove("splash-active");
+        document.body.style.overflow = "";
+        if (splashScreen) {
+            splashScreen.classList.add("hidden");
+            setTimeout(() => splashScreen.remove(), 700);
+        }
     }
 
-    splashEnter.addEventListener("click", dismissSplash);
+    if (splashScreen) {
+        splashScreen.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
+        splashEnter.addEventListener("click", dismissSplash);
+    }
 
     // Track instrument images — we'll register them after the grid renders
     function trackImageLoading(images) {
