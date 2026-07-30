@@ -1164,7 +1164,8 @@ body.fullscreen-open {
     font-weight: 500;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    pointer-events: none;
+    cursor: pointer;
+    pointer-events: auto;
     user-select: none;
 }
 

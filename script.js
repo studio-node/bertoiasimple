@@ -895,6 +895,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         });
+
+        const graveHintEl = document.getElementById("grave-gong-hint");
+        if (graveHintEl) {
+            graveHintEl.onclick = (e) => {
+                e.stopPropagation();
+                const graveItem = instruments.find(i => i.id === 'grave-gong');
+                const tile = document.querySelector(`.instrument-tile[data-id="grave-gong"]`);
+                if (graveItem && tile) {
+                    handleTileClick(graveItem, tile);
+                }
+            };
+        }
         
         const allTileImages = Array.from(document.querySelectorAll(".instrument-tile img")).filter(img => img.src && !img.src.startsWith("data:"));
         trackImageLoading(allTileImages);
