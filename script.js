@@ -503,6 +503,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. Custom Spectrogram Setup
     // No explicit initialization needed, we will draw lines based on canvas dimensions dynamically.
 
+    // iOS Silent Switch Bypass:
+    // Playing a tiny HTML5 audio clip on user interaction forces iOS Safari to switch
+    // the audio session from Ambient to Playback category, allowing Web Audio API
+    // sound to play even when the physical iPhone silent/ringer switch is ON.
+    let iosAudioUnlocked = false;
+    function unlockIOSAudioSession() {
+        if (iosAudioUnlocked) return;
+        try {
+            const silentAudio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+            silentAudio.play().then(() => {
+                silentAudio.pause();
+                iosAudioUnlocked = true;
+            }).catch(() => {});
+        } catch (e) {}
+    }
+
+    window.addEventListener('touchstart', unlockIOSAudioSession, { once: true, passive: true });
+    window.addEventListener('pointerdown', unlockIOSAudioSession, { once: true, passive: true });
+    window.addEventListener('click', unlockIOSAudioSession, { once: true, passive: true });
+
     function initAudio() {
         if (isAudioInitialized) return;
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -513,6 +533,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
         isAudioInitialized = true;
+
+        unlockIOSAudioSession();
     }
 
     async function loadAudioBuffer(item) {
