@@ -13,7 +13,8 @@
     padding: 0;
 }
 
-html, body {
+html,
+body {
     overflow-x: hidden;
     width: 100%;
     max-width: 100vw;
@@ -39,7 +40,7 @@ body.nav-menu-open {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: url('assets/images/background.jpg') center/cover no-repeat;
+    background: url('assets/images/background.webp') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -886,7 +887,7 @@ body.fullscreen-open {
         gap: 20px;
         overflow-y: auto;
         z-index: 1001;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
         animation: navFadeIn 0.25s ease forwards;
     }
 
@@ -907,7 +908,7 @@ body.fullscreen-open {
         width: 100%;
     }
 
-    .nav-item > a {
+    .nav-item>a {
         font-size: 18px;
         font-weight: 700;
         padding: 10px 0;
@@ -942,8 +943,15 @@ body.fullscreen-open {
     }
 
     @keyframes navFadeIn {
-        from { opacity: 0; transform: translateY(-8px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .splash-content {
@@ -1128,6 +1136,9 @@ body.fullscreen-open {
     height: auto;
     width: 100%;
     max-width: none;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
 }
 
 #grave-gong-footer .instrument-tile img {
@@ -1140,6 +1151,34 @@ body.fullscreen-open {
     padding: 0;
 }
 
+/* Grave Gong Text Hint Above Footer */
+.grave-gong-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    color: #000000;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    pointer-events: none;
+    user-select: none;
+}
+
+.grave-gong-hint .hint-arrow {
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .grave-gong-hint {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+}
+
 /* Layout Toggle */
 .layout-toggle-container {
     display: flex;
@@ -1148,21 +1187,25 @@ body.fullscreen-open {
     margin-bottom: 20px;
     gap: 10px;
 }
+
 .layout-toggle-label {
     font-size: 16px;
     font-weight: 500;
 }
+
 .switch {
     position: relative;
     display: inline-block;
     width: 50px;
     height: 24px;
 }
-.switch input { 
+
+.switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
+
 .slider {
     position: absolute;
     cursor: pointer;
@@ -1174,6 +1217,7 @@ body.fullscreen-open {
     -webkit-transition: .4s;
     transition: .4s;
 }
+
 .slider:before {
     position: absolute;
     content: "";
@@ -1185,17 +1229,21 @@ body.fullscreen-open {
     -webkit-transition: .4s;
     transition: .4s;
 }
-input:checked + .slider {
+
+input:checked+.slider {
     background-color: #b87333;
 }
-input:checked + .slider:before {
+
+input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
 }
+
 .slider.round {
     border-radius: 24px;
 }
+
 .slider.round:before {
     border-radius: 50%;
 }
@@ -1208,6 +1256,7 @@ input:checked + .slider:before {
     gap: clamp(5px, 1.5vw, 20px);
     width: 100%;
 }
+
 .layout-row .tile-wrapper {
     flex: 1 1 0;
     min-width: 0;
@@ -1220,6 +1269,7 @@ input:checked + .slider:before {
         flex-wrap: wrap;
         gap: 18px 12px;
     }
+
     .layout-row .tile-wrapper {
         flex: 0 1 calc(25% - 10px);
         min-width: 85px;
@@ -1233,16 +1283,19 @@ input:checked + .slider:before {
         flex-wrap: wrap;
         gap: 15px 10px;
     }
+
     .layout-row .tile-wrapper {
         flex: 0 1 calc(33.333% - 8px);
         min-width: 80px;
         max-width: 120px;
         margin-bottom: 20px;
     }
+
     .tile-wrapper[data-category="tonals-rods"] .instrument-tile img,
     .tile-wrapper[data-category="tonals-tops"] .instrument-tile img {
         height: 125px;
     }
+
     .instrument-tile img {
         max-height: 130px;
     }
@@ -1253,10 +1306,12 @@ input:checked + .slider:before {
         flex: 0 1 calc(50% - 8px);
         max-width: 140px;
     }
+
     .tile-wrapper[data-category="tonals-rods"] .instrument-tile img,
     .tile-wrapper[data-category="tonals-tops"] .instrument-tile img {
         height: 135px;
     }
+
     .instrument-tile img {
         max-height: 140px;
     }
