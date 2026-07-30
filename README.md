@@ -23,6 +23,10 @@ Instruments/
     └── [Instrument Name]/
 ```
 
+Global site assets (logos, background images) reside in `assets/images/`:
+- `assets/images/bertoia_logo.webp`: Header logo and favicon.
+- `assets/images/background.webp`: Main site background image.
+
 ---
 
 ## Adding a New Instrument
@@ -33,7 +37,7 @@ Instruments/
 ```javascript
 {
     id: 'my-new-instrument',
-    category: 'gongs', // 'gongs', 'singing-bars', 'tonals-tops', 'tonals-rods', or 'combinations'
+    category: 'gongs', // Valid categories: 'gongs', 'singing-bars', 'tonals-tops', 'tonals-rods', or 'combinations'
     image: "Instruments/Gongs/My New Instrument/image.webp",
     sound: "Instruments/Gongs/My New Instrument/sound.ogg",
     buffer: null,
@@ -47,11 +51,13 @@ Instruments/
 },
 ```
 
+> **Note**: The Grave Gong uses `id: 'grave-gong'` and automatically renders anchored at the bottom footer section of `index.html`.
+
 ---
 
 ## Editing or Removing Instruments
 
-- **Editing**: Update properties or file paths inside `script.js`. If replacing media files, update the files in `Instruments/<Category>/<Instrument Name>/`.
+- **Editing**: Update properties or file paths inside `script.js`. If replacing media files, keep them as `.webp` for images and `.ogg` for audio in `Instruments/<Category>/<Instrument Name>/`.
 - **Removing**: Delete or comment out the instrument object in `script.js`, and remove its folder from `Instruments/`.
 
 ---
@@ -66,7 +72,7 @@ Instruments/
 - `coming-soon.html`: Placeholder page for upcoming content.
 
 ### Navigation Links
-Navigation links are defined across HTML headers and `nav.js`. To modify site navigation, update the `<nav class="site-nav">` markup in the HTML files and `nav.js`.
+Navigation links are defined across HTML headers and `nav.js` (which handles mobile slide-out navigation). To modify site navigation, update the `<nav class="site-nav">` markup in the HTML files and `nav.js`.
 
 ---
 
