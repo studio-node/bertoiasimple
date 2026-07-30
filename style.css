@@ -1048,6 +1048,12 @@ body.fullscreen-open {
         width: 100%;
         margin-left: 0;
     }
+
+    .control-btn {
+        min-width: 36px;
+        min-height: 36px;
+        padding: 6px;
+    }
 }
 
 /* Text Page Styles (History, Sonambient Barn, etc) */

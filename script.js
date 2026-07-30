@@ -66,13 +66,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     let numLines = 65;
-    let lineSegments = 40;
-    let edgeTaperCache = Array.from({ length: 41 }, (_, j) => Math.sin((j / 40) * Math.PI));
+    let lineSegments = window.innerWidth <= 768 ? 24 : 36;
+    let edgeTaperCache = Array.from({ length: lineSegments + 1 }, (_, j) => Math.sin((j / lineSegments) * Math.PI));
     let lineInertia = Array(numLines).fill(0);
 
     function updateLineCount() {
         if (!canvas) return;
-        const targetHeight = canvas.height || 540;
+        const targetHeight = getTargetCanvasHeight();
         const calculatedLines = Math.max(32, Math.floor(targetHeight / 8.3));
         if (calculatedLines !== numLines || lineInertia.length !== numLines) {
             numLines = calculatedLines;
@@ -82,14 +82,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const resizeCanvas = () => {
         if (!canvas) return;
-        canvas.width = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
+        const cssWidth = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
         const targetHeight = getTargetCanvasHeight();
-        canvas.height = targetHeight;
-        
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvas.width = cssWidth * dpr;
+        canvas.height = targetHeight * dpr;
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        lineSegments = (window.innerWidth <= 768 || dpr > 1.5) ? 24 : 36;
+        edgeTaperCache = Array.from({ length: lineSegments + 1 }, (_, j) => Math.sin((j / lineSegments) * Math.PI));
+
         updateLineCount();
         
         const isMobile = window.innerWidth <= 768;
-        maskGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        maskGrad = ctx.createLinearGradient(0, 0, cssWidth, 0);
         maskGrad.addColorStop(0, 'rgba(0, 0, 0, 1)');
         if (isMobile) {
             maskGrad.addColorStop(1, 'rgba(0, 0, 0, 1)');
@@ -557,6 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function stopInstance(instance, fadeOutDuration = 1.5) {
+        if (!instance) return;
         instance.manualStop = true;
         if (instance.gainNode && !instance.isPaused) {
             const now = audioCtx.currentTime;
@@ -565,10 +574,13 @@ document.addEventListener("DOMContentLoaded", () => {
             instance.gainNode.gain.linearRampToValueAtTime(0, now + fadeOutDuration);
             setTimeout(() => {
                 try { instance.source.stop(); } catch (e) { }
-                instance.gainNode.disconnect();
+                try { instance.source.disconnect(); } catch (e) { }
+                try { instance.gainNode.disconnect(); } catch (e) { }
             }, fadeOutDuration * 1000 + 50);
         } else {
             try { instance.source.stop(); } catch (e) { }
+            try { instance.source.disconnect(); } catch (e) { }
+            try { instance.gainNode.disconnect(); } catch (e) { }
         }
     }
 
@@ -597,8 +609,6 @@ document.addEventListener("DOMContentLoaded", () => {
             tileElement.classList.remove("loading");
             tileElement.classList.add("active");
         }
-        
-        if (!buffer) return;
 
         const source = audioCtx.createBufferSource();
         source.buffer = buffer;
@@ -652,8 +662,10 @@ document.addEventListener("DOMContentLoaded", () => {
         source.start(0, offset);
         startAnimate(); // Wake the visualizer loop
         startProgressLoop(); // Wake the progress bar updates
+
         if (item.activeInstances.length > 0) {
-            item.activeInstances[0] = instance; // Replace paused instance
+            stopInstance(item.activeInstances[0], 0.1);
+            item.activeInstances[0] = instance;
         } else {
             item.activeInstances.push(instance);
         }
@@ -880,6 +892,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const img = document.createElement("img");
             if (item.image) {
                 img.src = item.image;
+                img.loading = "lazy";
+                img.decoding = "async";
                 if (item.id !== 'grave-gong') {
                     img.width = 180;
                     img.height = 240;
@@ -911,10 +925,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (item.image) {
                 tile.addEventListener("click", () => handleTileClick(item, tile));
-                tile.addEventListener("mouseenter", () => {
-                    if (!audioCtx) initAudio();
-                    loadAudioBuffer(item);
-                });
             }
         });
 
@@ -948,32 +958,41 @@ document.addEventListener("DOMContentLoaded", () => {
     let animating = false;
 
     function animate() {
-        // Clear to transparent at the start of frame
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (document.hidden) {
+            animating = false;
+            return;
+        }
+
+        const cssWidth = canvas.clientWidth || canvas.parentElement?.clientWidth || 800;
+        const cssHeight = getTargetCanvasHeight();
+
+        // Clear to transparent at the start of frame using logical CSS dimensions
+        ctx.clearRect(0, 0, cssWidth, cssHeight);
 
         let overallEnergy = 0;
 
         if (isAudioInitialized) {
             analyser.getByteFrequencyData(dataArray);
-            for (let i = 0; i < dataArray.length; i++) {
+            const maxBin = Math.min(60, dataArray.length);
+            for (let i = 0; i < maxBin; i++) {
                 overallEnergy += dataArray[i];
             }
-            overallEnergy /= dataArray.length;
+            overallEnergy /= maxBin;
         }
 
         // Speed of the organic "breathing" increases slightly with volume
         time += 0.01 + ((overallEnergy / 255) * 0.03);
 
-        const verticalPadding = Math.max(35, Math.floor(canvas.height * 0.08));
-        const availableHeight = canvas.height - (verticalPadding * 2);
+        const verticalPadding = Math.max(35, Math.floor(cssHeight * 0.08));
+        const availableHeight = cssHeight - (verticalPadding * 2);
         const lineSpacing = availableHeight / numLines;
-        const segmentWidth = canvas.width / lineSegments;
+        const segmentWidth = cssWidth / lineSegments;
 
         const maxWaveAmplitude = Math.min(30, verticalPadding * 0.65);
 
         for (let i = 0; i < numLines; i++) {
             // i=0 is lowest frequency (bottom of screen)
-            const baseY = canvas.height - verticalPadding - (i * lineSpacing) - (lineSpacing / 2);
+            const baseY = cssHeight - verticalPadding - (i * lineSpacing) - (lineSpacing / 2);
 
             let targetAmplitude = 0;
             if (isAudioInitialized) {
@@ -1040,13 +1059,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (maskGrad) {
             ctx.globalCompositeOperation = "destination-in";
             ctx.fillStyle = maskGrad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, cssWidth, cssHeight);
         }
 
         // Draw solid white background behind the lines
         ctx.globalCompositeOperation = "destination-over";
         ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, cssWidth, cssHeight);
 
         // Reset to default source-over blend mode
         ctx.globalCompositeOperation = "source-over";
@@ -1072,6 +1091,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Start animation loop
     startAnimate();
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+            startAnimate();
+        }
+    });
 
     // JavaScript-based responsive layout for Singing Bars has been removed.
     // Layout is now fully handled by CSS fluid grids.
