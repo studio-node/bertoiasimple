@@ -64,12 +64,12 @@ Global site assets (logos, background images) reside in `assets/images/`:
 
 ## Site Pages & Navigation
 
-### Pages
-- `index.html`: Main virtual barn interactive simulator.
-- `sonambient-barn.html`: Background and history of the Sonambient Barn.
-- `materials.html`: Technical details on metals and sculpture types.
-- `monotypes.html`: Monotype artwork relationships.
-- `coming-soon.html`: Placeholder page for upcoming content.
+### Pages & Slugs
+- `home` (`home.html` / `index.html`): Main virtual barn interactive simulator.
+- `sonambient-barn` (`sonambient-barn.html`): Background and history of the Sonambient Barn.
+- `materials` (`materials.html`): Technical details on metals and sculpture types.
+- `monotypes` (`monotypes.html`): Monotype artwork relationships.
+- `coming-soon` (`coming-soon.html`): Placeholder page for upcoming content.
 
 ### Navigation Links
 Navigation links are defined across HTML headers and `nav.js` (which handles mobile slide-out navigation). To modify site navigation, update the `<nav class="site-nav">` markup in the HTML files and `nav.js`.
